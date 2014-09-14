@@ -1,0 +1,7 @@
+{
+    "name": "ngm1",
+    "dependencies": {
+        "angular": "1.2.23",
+        "d3": "3.4.11"
+    }
+}
