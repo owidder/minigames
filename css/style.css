@@ -2,7 +2,10 @@ body {
     padding: 10px !important;
 }
 
+.bubble-0 > circle {
+    fill: red;
+}
+
 .bubble > text {
-    color: #ffffff;
-    background-color: #ffffff;
+    fill: white;
 }
