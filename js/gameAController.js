@@ -71,11 +71,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
                 var radius = Math.min(width, height) / 3;
 
-                var bubbles = g
-                    .append("circle")
-                    .attr("r", radius);
+                g.append("circle").attr("r", radius);
 
-                var bubblesText = g.append("text")
+                g.append("text")
                     .text(function(d) { return d.name; })
                     .style("font-size", radius + "px")
                     .attr("dx", "-.9em")
