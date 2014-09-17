@@ -13,6 +13,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                     nodes: [{name:currentVal, group:0}],
                     links: []
                 };
+                $scope.$apply();
             }
 
             $scope.$on('new-bubble', function(evt) {
