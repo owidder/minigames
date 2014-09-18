@@ -2,6 +2,11 @@ body {
     padding: 10px !important;
 }
 
+#field {
+    background-color: red;
+    display: none;
+}
+
 .bubble-0 > circle {
     fill: red;
 }

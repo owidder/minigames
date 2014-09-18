@@ -32,12 +32,18 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             function showResult(x) {
                 if(evaluate(x)) {
+                    $("#field").style("background-color: red");
                     $scope.result = "Win";
                 }
                 else {
+                    $("#field").style("background-color: green");
                     $scope.result = "Loose";
                 }
                 $scope.$apply();
+
+                $("#field").fadeIn(500);
+                $("#field").fadeOut(500);
+
             }
 
             function maybeIncreaseNumberOfGroups() {
@@ -129,6 +135,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             height = $(window).height();
             width = $(window).width();
             middleX = width / 2;
+
+            $scope.height = height;
+            $scope.width = width;
 
             lastGroupIncreaseTime = (new Date()).valueOf();
             $scope.level = 0;
