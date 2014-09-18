@@ -26,10 +26,10 @@ body {
     fill: white;
 }
 
-.win {
+.Win {
     background-color: green;
 }
 
-.loose {
+.Loose {
     background-color: red;
 }
