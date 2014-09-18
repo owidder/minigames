@@ -2,13 +2,61 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;
 
-    var isInNewBubblePhase = true;
-    var force, svg, g, width, height, middleX;
-
     var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', ['$scope', function ($scope) {
-            var currentVal = 0;
+            var GROUP_INCREASE_INTERVAL = 10000;
+            var MAX_NUMBER_OF_GROUPS = 5;
+            var MAX_NUMBER = 100;
 
-            function newBubble() {
+            var isInNewBubblePhase = true;
+            var force, svg, g, width, height, middleX;
+            var currentNumber, currentGroup;
+            var lastGroupIncreaseTime;
+            var currentNumberOfGroups = 1;
+
+            var lastNumbers = {};
+
+            function evaluate(x) {
+                var lastNumber;
+                lastNumber = lastNumbers[currentGroup];
+                lastNumbers[currentGroup] = currentNumber;
+                if(typeof(lastNumber) === 'undefined') {
+                    return true;
+                }
+                if(x < middleX) {
+                    return (currentNumber <= lastNumber);
+                }
+                else {
+                    return (currentNumber >= lastNumber);
+                }
+            }
+
+            function showResult(x) {
+                if(evaluate(x)) {
+                    $scope.result = "Win";
+                }
+                else {
+                    $scope.result = "Loose";
+                }
+                $scope.$apply();
+            }
+
+            function maybeIncreaseNumberOfGroups() {
+                if(currentNumberOfGroups >= MAX_NUMBER_OF_GROUPS) {
+                    return;
+                }
+                var currentMillis = (new Date()).valueOf();
+                if(currentMillis - lastGroupIncreaseTime > GROUP_INCREASE_INTERVAL) {
+                    lastGroupIncreaseTime = currentMillis;
+                    currentNumberOfGroups++;
+                    $scope.level = currentNumberOfGroups - 1;
+                    $scope.apply();
+                }
+            }
+
+            function newBubble(x) {
+                maybeIncreaseNumberOfGroups();
+                showResult(x);
+
                 force.nodes([]);
                 force.links([]);
                 force.stop();
@@ -20,13 +68,13 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             function tick() {
                 g.attr("transform", function(d) {
-                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < 10) {
+                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/4) {
                         isInNewBubblePhase = false;
                     }
                     if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
                         isInNewBubblePhase = true;
                         setTimeout(function() {
-                            newBubble();
+                            newBubble(d.x);
                         }, 10);
                     }
                     return "translate(" + d.x + "," + d.y + ")";
@@ -38,9 +86,11 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                     .attr("width", width)
                     .attr("height", height);
 
-                currentVal++;
+                var group = Math.floor(Math.random() * currentNumberOfGroups);
+                currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+
                 var bubbles = {
-                    nodes: [{name:currentVal, group:0}],
+                    nodes: [{name:currentNumber, group:group}],
                     links: []
                 };
 
@@ -80,6 +130,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             width = $(window).width();
             middleX = width / 2;
 
+            lastGroupIncreaseTime = (new Date()).valueOf();
+            $scope.level = 0;
             startBubble();
         }]
     );
