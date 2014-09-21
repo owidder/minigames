@@ -2,11 +2,6 @@ body {
     padding: 10px !important;
 }
 
-#field {
-    background-color: red;
-    display: none;
-}
-
 .bubble-0 > circle {
     fill: red;
 }
@@ -31,10 +26,18 @@ body {
     fill: white;
 }
 
-.Win {
-    background-color: green;
+.field {
+    opacity: 0.1;
 }
 
-.Loose {
-    background-color: red;
+.win {
+    fill: green;
+}
+
+.loose {
+    fill: red;
+}
+
+.start {
+    fill: grey;
 }

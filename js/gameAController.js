@@ -7,8 +7,12 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             var MAX_NUMBER_OF_GROUPS = 5;
             var MAX_NUMBER = 100;
 
+            var BUBBLE_FADE_OUT_TIME = 1000;
+            var BACKGROUND_FADE_IN_TIME = 100;
+            var BACKGROUND_FADE_OUT_TIME = 1000;
+
             var isInNewBubblePhase = true;
-            var force, svg, g, width, height, middleX;
+            var force, svg, g, width, height, middleX, background;
             var currentNumber, currentGroup;
             var lastGroupIncreaseTime;
             var currentNumberOfGroups = 1;
@@ -31,19 +35,25 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }
 
             function showResult(x) {
+                var nextColor;
                 if(evaluate(x)) {
-                    $("#field").style("background-color: red");
+                    nextColor = "green";
+                    background.attr("class", "win");
                     $scope.result = "Win";
                 }
                 else {
-                    $("#field").style("background-color: green");
+                    background.attr("class", "loose");
                     $scope.result = "Loose";
                 }
                 $scope.$apply();
 
-                $("#field").fadeIn(500);
-                $("#field").fadeOut(500);
+/*
+                colorField
+                    .transition().duration(BACKGROUND_FADE_IN_TIME).attr('opacity', 0.5)
+                    .transition().duration(BACKGROUND_FADE_OUT_TIME).attr('opacity', 0.0);
+*/
 
+                console.log($scope.result);
             }
 
             function maybeIncreaseNumberOfGroups() {
@@ -55,18 +65,14 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                     lastGroupIncreaseTime = currentMillis;
                     currentNumberOfGroups++;
                     $scope.level = currentNumberOfGroups - 1;
-                    $scope.apply();
+                    $scope.$apply();
                 }
             }
 
             function newBubble(x) {
                 maybeIncreaseNumberOfGroups();
-                showResult(x);
 
-                force.nodes([]);
-                force.links([]);
-                force.stop();
-                svg.remove();
+                g.remove();
                 setTimeout(function() {
                     startBubble();
                 }, 10);
@@ -74,24 +80,28 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             function tick() {
                 g.attr("transform", function(d) {
-                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/4) {
+                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/8) {
                         isInNewBubblePhase = false;
+                        console.log('A - x: ' + d.x, 'middleX: ' + middleX);
                     }
                     if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
                         isInNewBubblePhase = true;
+                        console.log('B - x: ' + d.x, 'middleX: ' + middleX);
+                        console.log("call: showResult("+ d.x+")");
+                        force.nodes([]);
+                        force.links([]);
+                        force.stop();
+                        showResult(d.x);
+                        g.transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
                         setTimeout(function() {
                             newBubble(d.x);
-                        }, 10);
+                        }, BUBBLE_FADE_OUT_TIME);
                     }
                     return "translate(" + d.x + "," + d.y + ")";
                 })
             }
 
             function startBubble() {
-                svg = d3.select("body").append("svg")
-                    .attr("width", width)
-                    .attr("height", height);
-
                 var group = Math.floor(Math.random() * currentNumberOfGroups);
                 currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
 
@@ -132,12 +142,20 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 force.on("tick", tick);
             }
 
+            $scope.result = 'none';
+
             height = $(window).height();
             width = $(window).width();
             middleX = width / 2;
 
-            $scope.height = height;
-            $scope.width = width;
+            svg = d3.select("#field").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            background = svg.append("rect")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("class", "start");
 
             lastGroupIncreaseTime = (new Date()).valueOf();
             $scope.level = 0;
