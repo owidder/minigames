@@ -8,7 +8,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             var MAX_NUMBER = 100;
 
             var BUBBLE_FADE_OUT_TIME = 500;
-            var BACKGROUND_FADE_IN_TIME = 100;
+            var BACKGROUND_FADE_IN_TIME = 500;
             var BACKGROUND_FADE_OUT_TIME = 500;
 
             var isInNewBubblePhase = true;
@@ -46,14 +46,11 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 }
                 $scope.$apply();
 
-                if(nextColor !== lastColor) {
-                    lastColor = nextColor;
-                    background
-                        .attr('opacity', 0.1)
-                        .transition().duration(BACKGROUND_FADE_OUT_TIME).attr('opacity', 0.0)
-                        .attr('fill', nextColor)
-                        .transition().duration(BACKGROUND_FADE_IN_TIME).attr('opacity', 0.1);
-                }
+                background
+                    .attr('opacity', 0.0)
+                    .attr('fill', nextColor)
+                    .transition().duration(BACKGROUND_FADE_IN_TIME).attr('opacity', 0.1)
+                    .transition().duration(BACKGROUND_FADE_OUT_TIME).attr('opacity', 0.0);
 
                 console.log($scope.result);
             }
