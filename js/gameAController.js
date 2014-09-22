@@ -3,209 +3,248 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
 
     var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', ['$scope', function ($scope) {
-            var GROUP_INCREASE_INTERVAL = 10000;
-            var MAX_NUMBER_OF_GROUPS = 5;
-            var MAX_NUMBER = 100;
-            var MAX_HEALTH = 5;
-            var TIMER_TICK_DURATION = 500;
+        var GROUP_INCREASE_INTERVAL = 10000;
+        var MAX_NUMBER_OF_GROUPS = 5;
+        var MAX_NUMBER = 100;
+        var MAX_HEALTH = 5;
+        var TIMER_TICK_DURATION = 500;
+        var NUMBER_OF_LIFES = 3;
 
-            var BUBBLE_FADE_OUT_TIME = 300;
-            var THUMB_FADE_IN_TIME = 200;
-            var THUMB_FADE_OUT_TIME = 500;
-            var THUMB_OPACITY = 0.2;
+        var BUBBLE_FADE_OUT_TIME = 300;
+        var THUMB_FADE_IN_TIME = 200;
+        var THUMB_FADE_OUT_TIME = 500;
+        var THUMB_OPACITY = 0.2;
 
-            var isInNewBubblePhase = true;
-            var force, svg, g, circle, width, height, middleX, thumbsUp, thumbsDown;
-            var progressBar, timer;
-            var healthState = 0;
-            var currentNumber, currentGroup;
-            var lastGroupIncreaseTime;
-            var currentNumberOfGroups = 1;
+        var isInNewBubblePhase = true;
+        var force, svg, g, circle, width, height, middleX, thumbsUp, thumbsDown;
+        var progressBar, timer;
+        var healthState = 0, lifeCtr, lifes;
+        var currentNumber, currentGroup;
+        var lastGroupIncreaseTime;
+        var currentNumberOfGroups = 1;
 
-            var lastNumbers = {};
+        var lastNumbers = {};
 
-            function healthCounter() {
-                var progress;
-                if(healthState > MAX_HEALTH) {
-                    healthState = 0;
-                }
+        function healthCounter() {
+            var progress;
+            if(healthState > MAX_HEALTH) {
+                healthState = 0;
+            }
 
-                progress = (100 / MAX_HEALTH) * healthState;
-                progressBar.attr('aria-valuenow', progress).style({'width': progress + '%'});
+            progress = (100 / MAX_HEALTH) * healthState;
+            progressBar.attr('aria-valuenow', progress).style({'width': progress + '%'});
 
-                switch(healthState) {
-                    case 0:
-                    case 1:
-                        $scope.progressStyle = 'success';
-                        break;
+            switch(healthState) {
+                case 0:
+                case 1:
+                    $scope.progressStyle = 'success';
+                    break;
 
-                    case 2:
-                        $scope.progressStyle = 'info';
-                        break;
+                case 2:
+                    $scope.progressStyle = 'info';
+                    break;
 
-                    case 3:
-                        $scope.progressStyle = 'warning';
-                        break;
+                case 3:
+                    $scope.progressStyle = 'warning';
+                    break;
 
-                    default:
-                        $scope.progressStyle = 'danger';
-                }
+                default:
+                    $scope.progressStyle = 'danger';
+            }
+            $scope.$apply();
+
+            healthState++;
+            if(healthState > MAX_HEALTH) {
+                roundEnd(true);
+            }
+        }
+
+        function evaluate(x) {
+            var lastNumber;
+            lastNumber = lastNumbers[currentGroup];
+            lastNumbers[currentGroup] = currentNumber;
+            if(typeof(lastNumber) === 'undefined') {
+                return true;
+            }
+            if(x < middleX) {
+                return (currentNumber <= lastNumber);
+            }
+            else {
+                return (currentNumber >= lastNumber);
+            }
+        }
+
+        function showResult(isTimeOut, x) {
+            var thumb, result;
+            if(!isTimeOut && evaluate(x)) {
+                thumb = thumbsUp;
+                result = true;
+            }
+            else {
+                thumb = thumbsDown;
+                result = false;
+            }
+
+            thumb
+                .attr('opacity', 0.0)
+                .transition().duration(THUMB_FADE_IN_TIME).style({'opacity': THUMB_OPACITY})
+                .transition().duration(THUMB_FADE_OUT_TIME).style({'opacity': 0.0});
+
+            return result;
+        }
+
+        function maybeIncreaseNumberOfGroups() {
+            if(currentNumberOfGroups >= MAX_NUMBER_OF_GROUPS) {
+                return;
+            }
+            var currentMillis = (new Date()).valueOf();
+            if(currentMillis - lastGroupIncreaseTime > GROUP_INCREASE_INTERVAL) {
+                lastGroupIncreaseTime = currentMillis;
+                currentNumberOfGroups++;
+                $scope.level = currentNumberOfGroups - 1;
                 $scope.$apply();
-
-                healthState++;
-                if(healthState > MAX_HEALTH) {
-                    roundEnd(true);
-                }
             }
+        }
 
-            function evaluate(x) {
-                var lastNumber;
-                lastNumber = lastNumbers[currentGroup];
-                lastNumbers[currentGroup] = currentNumber;
-                if(typeof(lastNumber) === 'undefined') {
-                    return true;
-                }
-                if(x < middleX) {
-                    return (currentNumber <= lastNumber);
-                }
-                else {
-                    return (currentNumber >= lastNumber);
-                }
-            }
+        function newBubble() {
+            maybeIncreaseNumberOfGroups();
 
-            function showResult(isTimeOut, x) {
-                var thumb;
-                if(!isTimeOut && evaluate(x)) {
-                    thumb = thumbsUp;
-                }
-                else {
-                    thumb = thumbsDown;
-                }
+            g.remove();
+            setTimeout(function() {
+                startBubble();
+            }, 0);
+        }
 
-                thumb
-                    .attr('opacity', 0.0)
-                    .transition().duration(THUMB_FADE_IN_TIME).style({'opacity': THUMB_OPACITY})
-                    .transition().duration(THUMB_FADE_OUT_TIME).style({'opacity': 0.0});
-            }
+        function roundEnd(isTimeOut, x) {
+            var result;
 
-            function maybeIncreaseNumberOfGroups() {
-                if(currentNumberOfGroups >= MAX_NUMBER_OF_GROUPS) {
+            isInNewBubblePhase = true;
+
+            clearInterval(timer);
+            force.nodes([]);
+            force.links([]);
+            force.stop();
+            result = showResult(isTimeOut, x);
+
+            circle
+                .attr('opacity', 1)
+                .transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
+
+            if(!result) {
+                $scope.points = Math.max(0, $scope.points - currentNumber);
+                lifeCtr--;
+                $($('.life')[lifeCtr]).css('opacity', 0);
+
+                if(lifeCtr <= 0) {
+                    gameOver();
                     return;
                 }
-                var currentMillis = (new Date()).valueOf();
-                if(currentMillis - lastGroupIncreaseTime > GROUP_INCREASE_INTERVAL) {
-                    lastGroupIncreaseTime = currentMillis;
-                    currentNumberOfGroups++;
-                    $scope.level = currentNumberOfGroups - 1;
-                    $scope.$apply();
+            }
+            else {
+                $scope.points += currentNumber;
+            }
+
+            $scope.rounds++;
+            $scope.$apply();
+
+            setTimeout(function() {
+                newBubble();
+            }, BUBBLE_FADE_OUT_TIME);
+        }
+
+        function gameOver() {
+            clearInterval(timer);
+            force.nodes([]);
+            force.links([]);
+            force.stop();
+        }
+
+        function tick() {
+            g.attr("transform", function(d) {
+                if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/8) {
+                    isInNewBubblePhase = false;
                 }
-            }
+                if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
+                    roundEnd(false, d.x);
+                }
+                return "translate(" + d.x + "," + d.y + ")";
+            })
+        }
 
-            function newBubble() {
-                maybeIncreaseNumberOfGroups();
+        function startBubble() {
+            currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
+            currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
 
-                g.remove();
-                setTimeout(function() {
-                    startBubble();
-                }, 0);
-            }
+            var bubbles = {
+                nodes: [{name:currentNumber, group:currentGroup}],
+                links: []
+            };
 
-            function roundEnd(isTimeOut, x) {
-                isInNewBubblePhase = true;
-                clearInterval(timer);
-                force.nodes([]);
-                force.links([]);
-                force.stop();
-                showResult(isTimeOut, x);
-                circle
-                    .attr('opacity', 1)
-                    .transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
-                setTimeout(function() {
-                    newBubble();
-                }, BUBBLE_FADE_OUT_TIME);
-            }
+            force = d3.layout.force()
+                .charge(-150)
+                .linkDistance(10)
+                .size([width, height]);
 
-            function tick() {
-                g.attr("transform", function(d) {
-                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/8) {
-                        isInNewBubblePhase = false;
-                    }
-                    if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
-                        roundEnd(false, d.x);
-                    }
-                    return "translate(" + d.x + "," + d.y + ")";
+            force
+                .nodes(bubbles.nodes)
+                .links(bubbles.links)
+                .start();
+
+            g = svg.selectAll(".bubble")
+                .data(bubbles.nodes)
+                .enter().append("g")
+                .attr("class", function (d) {
+                    return "bubble bubble-" + d.group
                 })
-            }
+                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                .call(force.drag);
 
-            function startBubble() {
-                currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
-                currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+            var radius = Math.min(width, height) / 3;
 
-                var bubbles = {
-                    nodes: [{name:currentNumber, group:currentGroup}],
-                    links: []
-                };
+            circle = g.append("circle").attr("r", radius);
 
-                force = d3.layout.force()
-                    .charge(-150)
-                    .linkDistance(10)
-                    .size([width, height]);
+            g.append("text")
+                .text(function(d) { return d.name; })
+                .style("font-size", radius + "px")
+                .attr("dx", "-.9em")
+                .attr("dy", ".35em");
 
-                force
-                    .nodes(bubbles.nodes)
-                    .links(bubbles.links)
-                    .start();
+            force.on("tick", tick);
 
-                g = svg.selectAll(".bubble")
-                    .data(bubbles.nodes)
-                    .enter().append("g")
-                    .attr("class", function (d) {
-                        return "bubble bubble-" + d.group
-                    })
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                    .call(force.drag);
+            healthState = 0;
+            timer = setInterval(healthCounter, TIMER_TICK_DURATION);
+        }
 
-                var radius = Math.min(width, height) / 3;
+        $scope.result = 'none';
 
-                circle = g.append("circle").attr("r", radius);
+        height = $(window).height();
+        width = $(window).width();
+        middleX = width / 2;
 
-                g.append("text")
-                    .text(function(d) { return d.name; })
-                    .style("font-size", radius + "px")
-                    .attr("dx", "-.9em")
-                    .attr("dy", ".35em");
+        svg = d3.select("#field").append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-                force.on("tick", tick);
+        d3.selectAll('.thumb').style({'font-size': height+'px'});
+        thumbsDown = d3.select(".thumb.loose");
+        thumbsUp = d3.select('.thumb.win');
 
-                healthState = 0;
-                timer = setInterval(healthCounter, TIMER_TICK_DURATION);
-            }
+        thumbsDown.style({'opacity': 0});
+        thumbsUp.style({'opacity': 0});
 
-            $scope.result = 'none';
+        progressBar = d3.select('.progress-bar');
 
-            height = $(window).height();
-            width = $(window).width();
-            middleX = width / 2;
+        lifeCtr = NUMBER_OF_LIFES;
+        lifes = d3.selectAll('.life');
 
-            svg = d3.select("#field").append("svg")
-                .attr("width", width)
-                .attr("height", height);
+        lastGroupIncreaseTime = (new Date()).valueOf();
+        $scope.level = 0;
 
-            d3.selectAll('.thumb').style({'font-size': height+'px'});
-            thumbsDown = d3.select(".thumb.loose");
-            thumbsUp = d3.select('.thumb.win');
+        $scope.points = 0;
+        $scope.rounds = 0;
 
-            thumbsDown.style({'opacity': 0});
-            thumbsUp.style({'opacity': 0});
-
-            progressBar = d3.select('.progress-bar');
-
-            lastGroupIncreaseTime = (new Date()).valueOf();
-            $scope.level = 0;
-
-            startBubble();
-        }]
-    );
+        startBubble();
+    }]);
 
     return gameAController;
 })();
