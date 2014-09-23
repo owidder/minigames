@@ -52,3 +52,9 @@ body {
     top: 0px;
     left: 0px;
 }
+.hide {
+    display:none;
+}
+
+.show {
+}

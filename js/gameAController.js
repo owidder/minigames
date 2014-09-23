@@ -6,9 +6,11 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 5;
         var MAX_NUMBER = 100;
-        var MAX_HEALTH = 100;
-        var TIMER_TICK_DURATION = 100;
+        var MAX_HEALTH = 5;
+        var TIMER_TICK_DURATION = 1000;
         var NUMBER_OF_LIFES = 3;
+        var COLOR_HIGHLIGHT_IN = 500;
+        var COLOR_HIGHLIGHT_OUT = 500;
 
         var BUBBLE_FADE_OUT_TIME = 300;
         var THUMB_FADE_IN_TIME = 200;
@@ -16,10 +18,12 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var THUMB_OPACITY = 0.2;
 
         var isInNewBubblePhase = true;
+        var isGameOver = false;
         var force, svg, g, circle, width, height, middleX, thumbsUp, thumbsDown;
         var progressBar, timer;
-        var healthState = 0, lifeCtr, lifes;
+        var healthState = 0, lifeCtr;
         var currentNumber, currentGroup;
+        var points, rounds;
         var lastGroupIncreaseTime;
         var currentNumberOfGroups = 1;
 
@@ -98,13 +102,18 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }
         }
 
-        function newBubble() {
-            maybeIncreaseNumberOfGroups();
+        function resetAnimations() {
+            clearInterval(timer);
+            force.nodes([]);
+            force.links([]);
+            force.stop();
+        }
 
-            g.remove();
-            setTimeout(function() {
-                startBubble();
-            }, 0);
+        function colorHighlight(node, fromColor, toColor) {
+            node
+                .style({'color': fromColor})
+                .transition().duration(COLOR_HIGHLIGHT_IN).style({'color': toColor})
+                .transition().duration(COLOR_HIGHLIGHT_OUT).style({'color': fromColor});
         }
 
         function roundEnd(isTimeOut, x) {
@@ -112,10 +121,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             isInNewBubblePhase = true;
 
-            clearInterval(timer);
-            force.nodes([]);
-            force.links([]);
-            force.stop();
+            resetAnimations();
             result = showResult(isTimeOut, x);
 
             circle
@@ -131,80 +137,140 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                     gameOver();
                     return;
                 }
+
+                colorHighlight(points, 'black', 'red');
             }
             else {
                 $scope.points += currentNumber;
+                $scope.rounds++;
+
+                colorHighlight(points, 'black', 'green');
+                colorHighlight(rounds, 'black', 'green');
             }
 
-            $scope.rounds++;
             $scope.$apply();
 
-            setTimeout(function() {
-                newBubble();
-            }, BUBBLE_FADE_OUT_TIME);
+            maybeIncreaseNumberOfGroups();
+            startBubble(BUBBLE_FADE_OUT_TIME);
         }
 
         function gameOver() {
-            clearInterval(timer);
-            force.nodes([]);
-            force.links([]);
-            force.stop();
+            isGameOver = true;
+            resetAnimations();
+            endGameMenu();
         }
 
         function tick() {
             g.attr("transform", function(d) {
-                if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/8) {
-                    isInNewBubblePhase = false;
-                }
-                if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
-                    roundEnd(false, d.x);
+                if(!isGameOver) {
+                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/8) {
+                        isInNewBubblePhase = false;
+                    }
+                    if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
+                        roundEnd(false, d.x);
+                    }
                 }
                 return "translate(" + d.x + "," + d.y + ")";
             })
         }
 
-        function startBubble() {
-            currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
-            currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+        function endGameMenu() {
+            g.remove();
 
-            var bubbles = {
-                nodes: [{name:currentNumber, group:currentGroup}],
-                links: []
-            };
+            setTimeout(function() {
+                var group = Math.random() * MAX_NUMBER_OF_GROUPS;
+                var text = 'P: ' + $scope.points + ' - R: ' + $scope.rounds;
 
-            force = d3.layout.force()
-                .charge(-150)
-                .linkDistance(10)
-                .size([width, height]);
+                var bubbles = {
+                    nodes: [{name:'P:' + $scope.points, group:0},
+                        {name:'R:' + $scope.rounds, group:1},
+                        {name: 'New\nGame', group:2}],
+                    links: [{source:0, target:1, value: 1},
+                        {source:1, target:2, value:1},
+                        {source:2, target:0, value:1}]
+                };
 
-            force
-                .nodes(bubbles.nodes)
-                .links(bubbles.links)
-                .start();
+                var radius = Math.min(width, height) / 4;
 
-            g = svg.selectAll(".bubble")
-                .data(bubbles.nodes)
-                .enter().append("g")
-                .attr("class", function (d) {
-                    return "bubble bubble-" + d.group
-                })
-                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                .call(force.drag);
+                force = d3.layout.force()
+                    .charge(-150)
+                    .linkDistance(2*radius)
+                    .size([width, height]);
 
-            var radius = Math.min(width, height) / 3;
+                force
+                    .nodes(bubbles.nodes)
+                    .links(bubbles.links)
+                    .start();
 
-            circle = g.append("circle").attr("r", radius);
+                g = svg.selectAll(".bubble")
+                    .data(bubbles.nodes)
+                    .enter().append("g")
+                    .attr("class", function (d) {
+                        return "bubble bubble-" + d.group
+                    })
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                    .call(force.drag);
 
-            g.append("text")
-                .text(function(d) { return d.name; })
-                .style("font-size", radius + "px")
-                .attr("dx", "-.9em")
-                .attr("dy", ".35em");
+                circle = g.append("circle").attr("r", radius);
 
-            force.on("tick", tick);
+                g.append("text")
+                    .text(function(d) { return d.name; })
+                    .style("font-size", radius/2 + "px")
+                    .attr("dx", "-.9em")
+                    .attr("dy", ".35em");
 
-            healthState = 0;
-            timer = setInterval(healthCounter, TIMER_TICK_DURATION);
+                force.on("tick", tick);
+            }, 0);
+        }
+
+        function startBubble(delay) {
+            if(util.isDefined(g)) {
+                g.remove();
+            }
+
+            setTimeout(function() {
+                currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
+                currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+
+                var bubbles = {
+                    nodes: [{name:currentNumber, group:currentGroup}],
+                    links: []
+                };
+
+                force = d3.layout.force()
+                    .charge(-150)
+                    .linkDistance(10)
+                    .size([width, height]);
+
+                force
+                    .nodes(bubbles.nodes)
+                    .links(bubbles.links)
+                    .start();
+
+                g = svg.selectAll(".bubble")
+                    .data(bubbles.nodes)
+                    .enter().append("g")
+                    .attr("class", function (d) {
+                        return "bubble bubble-" + d.group
+                    })
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                    .call(force.drag);
+
+                var radius = Math.min(width, height) / 3;
+
+                circle = g.append("circle").attr("r", radius);
+
+                g.append("text")
+                    .text(function(d) { return d.name; })
+                    .style("font-size", radius + "px")
+                    .attr("dx", "-.9em")
+                    .attr("dy", ".35em");
+
+                force.on("tick", tick);
+
+                healthState = 0;
+                timer = setInterval(healthCounter, TIMER_TICK_DURATION);
+            }, delay);
         }
 
         $scope.result = 'none';
@@ -227,13 +293,15 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         progressBar = d3.select('.progress-bar');
 
         lifeCtr = NUMBER_OF_LIFES;
-        lifes = d3.selectAll('.life');
 
         lastGroupIncreaseTime = (new Date()).valueOf();
         $scope.level = 0;
 
         $scope.points = 0;
         $scope.rounds = 0;
+
+        points = d3.select('#points');
+        rounds = d3.select('#rounds');
 
         startBubble();
     }]);
