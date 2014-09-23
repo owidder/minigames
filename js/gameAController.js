@@ -157,6 +157,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         function gameOver() {
             isGameOver = true;
             resetAnimations();
+            d3.selectAll('.hide-at-gameover').style({'display': 'none'});
             endGameMenu();
         }
 
@@ -183,18 +184,24 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
                 var bubbles = {
                     nodes: [{name:'P:' + $scope.points, group:0},
-                        {name:'R:' + $scope.rounds, group:1},
-                        {name: 'New\nGame', group:2}],
-                    links: [{source:0, target:1, value: 1},
-                        {source:1, target:2, value:1},
-                        {source:2, target:0, value:1}]
+                        {name:'R:' + $scope.rounds, group:4},
+                        {name: 'New Game', group:2},
+                        {name: 'WTF', group:3}],
+                    links: [
+                        {source:3, target:1, value:1},
+                        {source:3, target:2, value:1},
+                        {source:3, target:0, value:1},
+                        {source:0, target:1, value:1},
+                        {source:0, target:2, value:1},
+                        {source:1, target:2, value:1}
+                    ]
                 };
 
-                var radius = Math.min(width, height) / 4;
+                var radius = Math.min(width, height) / 5;
 
                 force = d3.layout.force()
                     .charge(-150)
-                    .linkDistance(2*radius)
+                    .linkDistance(3*radius)
                     .size([width, height]);
 
                 force
@@ -215,7 +222,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
                 g.append("text")
                     .text(function(d) { return d.name; })
-                    .style("font-size", radius/2 + "px")
+                    .style("font-size", function(d) { return Math.min(0.5*radius, (0.5*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
                     .attr("dx", "-.9em")
                     .attr("dy", ".35em");
 
