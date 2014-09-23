@@ -32,7 +32,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         function healthCounter() {
             var progress;
             progress = (100 / MAX_HEALTH) * healthState;
-            progressBar.attr('aria-valuenow', progress).style({'width': progress + '%'});
+            progressBar.attr('aria-valuenow', progress).style({'width': progress + '%', 'height': height / 20 + 'px'});
 
             console.log('progress: ' + progress);
 
@@ -183,10 +183,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 var text = 'P: ' + $scope.points + ' - R: ' + $scope.rounds;
 
                 var bubbles = {
-                    nodes: [{name:'P:' + $scope.points, group:0},
-                        {name:'R:' + $scope.rounds, group:4},
-                        {name: 'New Game', group:2},
-                        {name: 'WTF', group:3}],
+                    nodes: [{name:'P:' + $scope.points, group:0, clazz:'points'},
+                        {name:'R:' + $scope.rounds, group:4, clazz:'rounds'},
+                        {name: 'New Game', group:2, clazz:'new-game'},
+                        {name: 'WTF', group:3, clazz:'wtf'}],
                     links: [
                         {source:3, target:1, value:1},
                         {source:3, target:2, value:1},
@@ -213,7 +213,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                     .data(bubbles.nodes)
                     .enter().append("g")
                     .attr("class", function (d) {
-                        return "bubble bubble-" + d.group
+                        return d.clazz + " bubble bubble-" + d.group
                     })
                     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
                     .call(force.drag);
@@ -225,6 +225,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                     .style("font-size", function(d) { return Math.min(0.5*radius, (0.5*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
                     .attr("dx", "-.9em")
                     .attr("dy", ".35em");
+
+                d3.select('.new-game').append('svg:a').attr('xlink', 'href:#/g1');
 
                 force.on("tick", tick);
             }, 0);
@@ -309,6 +311,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         points = d3.select('#points');
         rounds = d3.select('#rounds');
+
+        d3.select('#countdown').style({'font-size': height/10 + 'px'});
 
         d3.selectAll('hide-at-gameover').style({'display': 'inline'});
 
