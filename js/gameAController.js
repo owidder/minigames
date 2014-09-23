@@ -310,6 +310,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         points = d3.select('#points');
         rounds = d3.select('#rounds');
 
+        d3.selectAll('hide-at-gameover').style({'display': 'inline'});
+
         startBubble();
     }]);
 
