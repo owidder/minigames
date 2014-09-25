@@ -175,78 +175,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             })
         }
 
-        function endGameMenu() {
-            g.remove();
-
-            setTimeout(function() {
-                var group = Math.random() * MAX_NUMBER_OF_GROUPS;
-                var text = 'P: ' + $scope.points + ' - R: ' + $scope.rounds;
-
-                var bubbles = {
-                    nodes: [{name:'P:' + $scope.points, group:0, clazz:'menu-circle non-href', color:'green'},
-                        {name:'R:' + $scope.rounds, group:4, clazz:'menu-circle non-href', color:'blue'},
-                        {name: 'New Game', group:2, clazz:'menu-circle with-href', href:'newGame()', color:'red'},
-                        {name: '', group:3, clazz:'menu-circle non-href', href:'', color:'orange'}],
-                    links: [
-                        {source:3, target:1, value:1},
-                        {source:3, target:2, value:1},
-                        {source:3, target:0, value:1},
-                        {source:0, target:1, value:1},
-                        {source:0, target:2, value:1},
-                        {source:1, target:2, value:1}
-                    ]
-                };
-
-                var radius = Math.min(width, height) / 5;
-
-                force = d3.layout.force()
-                    .charge(-150)
-                    .linkDistance(3*radius)
-                    .size([width, height]);
-
-                force
-                    .nodes(bubbles.nodes)
-                    .links(bubbles.links)
-                    .start();
-
-                g = svg.selectAll(".bubble")
-                    .data(bubbles.nodes)
-                    .enter().append("g")
-                    .attr("class", function (d) {
-                        return d.clazz
-                    })
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                    .call(force.drag);
-
-                d3.selectAll('.with-href')
-                    .append('svg:a').attr('xlink:href', '#').attr('ng-click', function(d) {return d.href})
-                    .append("circle").attr("r", radius)
-                    .attr('ng-click', function(d) {return d.href})
-                    .attr('fill', function(d) {return d.color})
-                ;
-
-                d3.selectAll('.non-href')
-                    .append("circle").attr("r", radius)
-                    .attr('fill', function(d) {return d.color})
-                ;
-
-                d3.selectAll('.menu-circle')
-                    .append("text")
-                    .text(function(d) { return d.name; })
-                    .style("font-size", function(d) { return Math.min(0.5*radius, (0.5*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
-                    .attr("dx", "-.9em")
-                    .attr("dy", ".35em");
-
-                d3.select('.new-game');
-
-                force.on("tick", tick);
-            }, 0);
-        }
-
-        function newGame() {
-            $route.reload();
-        }
-
         function startBubble(delay) {
             if(util.isDefined(g)) {
                 g.remove();
@@ -329,8 +257,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         rounds = d3.select('#rounds');
 
         d3.select('#countdown').style({'font-size': height/10 + 'px'});
-
-        d3.selectAll('hide-at-gameover').style({'display': 'inline'});
 
         startBubble();
     });
