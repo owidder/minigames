@@ -2,7 +2,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;
 
-    var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', function ($scope, $route) {
+    var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', function ($scope, $route, $location) {
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 5;
         var MAX_NUMBER = 100;
@@ -155,10 +155,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function gameOver() {
-            isGameOver = true;
-            resetAnimations();
-            d3.selectAll('.hide-at-gameover').style({'display': 'none'});
-            endGameMenu();
+            $scope.$root.points = $scope.points;
+            $scope.$root.rounds = $scope.rounds;
+            $location.path('/gameOver');
+            $scope.$apply();
         }
 
         function tick() {
