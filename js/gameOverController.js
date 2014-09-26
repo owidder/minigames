@@ -3,6 +3,10 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
 
     var gameOverController = com_geekAndPoke_Ngm1.controllers.controller('GameOverController', function ($scope) {
+        var INSERT_TEXT_HERE_CLASS = 'insert-text-here';
+        var NON_HREF_CLASS = 'non-href';
+        var WITH_HREF_CLASS = 'with-href';
+
         var g;
 
         function tick() {
@@ -18,13 +22,17 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             .attr("width", width)
             .attr("height", height);
 
-        var text = 'P: ' + $scope.$root.points + ' - R: ' + $scope.$root.rounds;
+        var points = $scope.$root.points;
+        var rounds = $scope.$root.rounds;
+
+        if(!util.isDefined(points)) points = '-';
+        if(!util.isDefined(rounds)) rounds = '-';
 
         var bubbles = {
-            nodes: [{name:'P:' + $scope.points, group:0, clazz:'menu-circle non-href', color:'green'},
-                {name:'R:' + $scope.rounds, group:4, clazz:'menu-circle non-href', color:'blue'},
-                {name: 'New Game', group:2, clazz:'menu-circle with-href', href:'#/g1', color:'red'},
-                {name: '', group:3, clazz:'menu-circle non-href', href:'#', color:'orange'}],
+            nodes: [{name:'P:' + points, group:0, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'green'},
+                {name:'R:' + rounds, group:4, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'blue'},
+                {name: 'New Game', group:2, clazz:WITH_HREF_CLASS, href:'#/g1', color:'red'},
+                {name: 'Menu', group:3, clazz:WITH_HREF_CLASS, href:'#/menu', color:'orange'}],
             links: [
                 {source:3, target:1, value:1},
                 {source:3, target:2, value:1},
@@ -56,19 +64,19 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .call(force.drag);
 
-        d3.selectAll('.with-href')
-            .append('svg:a').attr('xlink:href', function(d) {return d.href})
+        d3.selectAll('.' + WITH_HREF_CLASS)
+            .append('svg:a').attr('xlink:href', function(d) {return d.href}).attr('class', INSERT_TEXT_HERE_CLASS)
             .append("circle").attr("r", radius)
             .attr('ng-click', function(d) {return d.href})
             .attr('fill', function(d) {return d.color})
         ;
 
-        d3.selectAll('.non-href')
-            .append("circle").attr("r", radius)
+        d3.selectAll('.' + NON_HREF_CLASS)
+            .append("circle").attr("r", radius).attr('class', INSERT_TEXT_HERE_CLASS)
             .attr('fill', function(d) {return d.color})
         ;
 
-        d3.selectAll('.menu-circle')
+        d3.selectAll('.' + INSERT_TEXT_HERE_CLASS)
             .append("text")
             .text(function(d) { return d.name; })
             .style("font-size", function(d) { return Math.min(0.5*radius, (0.5*radius - 8) / this.getComputedTextLength() * 38) + "px"; })

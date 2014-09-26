@@ -24,7 +24,7 @@ com_geekAndPoke_Ngm1.app = (function() {
                 controller: 'GameOverController'
             })
             .otherwise({
-                redirectTo: '/menu'
+                redirectTo: '/g1'
             });
     });
 
