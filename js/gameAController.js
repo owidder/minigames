@@ -225,7 +225,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }, delay);
         }
 
-        $scope.newGame = newGame;
         $scope.result = 'none';
 
         height = $(window).height();

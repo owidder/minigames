@@ -80,5 +80,5 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         force.on("tick", tick);
     });
 
-    return gameAController;
+    return gameOverController;
 })();
