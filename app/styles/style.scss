@@ -1,0 +1,59 @@
+body {
+    padding: 10px !important;
+}
+
+.bubble-0 > circle {
+    fill: red;
+}
+
+.bubble-1 > circle {
+    fill: yellow;
+}
+
+.bubble-2 > circle {
+    fill: green;
+}
+
+.bubble-3 > circle {
+    fill: blue;
+}
+
+.bubble-4 > circle {
+    fill: black;
+}
+
+.bubble > text {
+    fill: white;
+}
+
+.thumb {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.win {
+    color: green;
+}
+
+.loose {
+    color: red;
+}
+
+#countdown {
+    top: 0px;
+    left: 0px;
+    opacity: 0.5;
+}
+
+#field {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.hide {
+    display:none;
+}
+
+.show {
+}
