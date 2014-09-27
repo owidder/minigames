@@ -1,4 +1,4 @@
-modules.export = function (ns) {
+module.exports = function (ns) {
 
     ns.app = angular.module('ngm1', [
         'ngRoute',
