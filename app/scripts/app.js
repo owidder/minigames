@@ -22,7 +22,7 @@ module.exports = function (ns) {
                 controller: 'MenuCtrl'
             })
             .otherwise({
-                redirectTo: '/g1'
+                redirectTo: '/menu'
             });
     });
 };

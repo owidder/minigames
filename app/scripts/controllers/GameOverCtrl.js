@@ -78,8 +78,13 @@ module.exports = function(ns) {
         d3.selectAll('.' + INSERT_TEXT_HERE_CLASS)
             .append("text")
             .text(function(d) { return d.name; })
-            .style("font-size", function(d) { return Math.min(0.5*radius, (0.5*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
-            .attr("dx", "-.9em")
+            .style({'font-size': function (d) {
+                return Math.min(0.5 * radius, (0.5 * radius - 8) / this.getComputedTextLength() * 45) + "px";
+            },
+                'font-family': 'Courier'
+            })
+            .attr('fill', 'white')
+            .attr("dx", "-1.8em")
             .attr("dy", ".35em");
 
         d3.select('.new-game');

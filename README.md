@@ -1,14 +1,12 @@
-## Example Boilerplate
+## NGM1
 
-This is an example Boilerplate for using Angular, Gulp, Browserify and a local webserver with LiveReload.
-
-It's part of the blog post at http://mindthecode.com/lets-build-an-angularjs-app-with-browserify-and-gulp
+This is a simple mobile browser based game made with Angular.js, d3 and browserify
 
 ## Installation
 
-    git clone https://github.com/Hyra/angular-gulp-browserify-livereload-boilerplate/ example-app
+    clone this repo
 
-    cd example-app
+    checkout this branch
 
     npm install
 
