@@ -13,8 +13,21 @@ module.exports = function (ns) {
         }
     }
 
+    function clearTimer(AppContext) {
+        if(ns.util.isDefined(AppContext.timer) && AppContext.timer != null) {
+            clearInterval(AppContext.timer);
+            AppContext.timer = null;
+        }
+    }
+
+    function storeTimer(AppContext, timer) {
+        AppContext.timer = timer;
+    }
+
     ns.util = {
         clearSvg: clearSvg,
-        isDefined: isDefined
+        isDefined: isDefined,
+        clearTimer: clearTimer,
+        storeTimer: storeTimer
     };
 };

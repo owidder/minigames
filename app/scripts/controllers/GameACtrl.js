@@ -19,7 +19,7 @@ module.exports = function(ns) {
         var isInNewBubblePhase = true;
         var isGameOver = false;
         var force, svg, g, circle, width, height, middleX, thumbsUp, thumbsDown;
-        var progressBar, timer;
+        var progressBar;
         var healthState = 0, lifeCtr;
         var currentNumber, currentGroup;
         var points, rounds;
@@ -109,7 +109,7 @@ module.exports = function(ns) {
         }
 
         function resetAnimations() {
-            clearInterval(timer);
+            ns.util.clearTimer(AppContext);
             force.nodes([]);
             force.links([]);
             force.stop();
@@ -229,7 +229,8 @@ module.exports = function(ns) {
                 healthState = 0;
                 computePossiblePoints();
                 $scope.$apply();
-                timer = setInterval(healthCounter, TIMER_TICK_DURATION);
+                ns.util.clearTimer(AppContext);
+                ns.util.storeTimer(AppContext, setInterval(healthCounter, TIMER_TICK_DURATION));
             }, delay);
         }
 

@@ -2,6 +2,8 @@
 
 module.exports = function(ns) {
     ns.gameOverCtrl = ns.services.controller('GameOverCtrl', function ($scope, AppContext) {
+        ns.util.clearTimer(AppContext);
+
         var INSERT_TEXT_HERE_CLASS = 'insert-text-here';
         var NON_HREF_CLASS = 'non-href';
         var WITH_HREF_CLASS = 'with-href';
