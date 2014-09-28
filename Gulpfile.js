@@ -90,7 +90,7 @@ gulp.task('views', function () {
         .pipe(gulp.dest('dist/views/'));
 });
 
-gulp.task('watch', ['lint'], function () {
+gulp.task('watch', ['dev', 'lint', 'devserver'], function () {
     // Start webserver
     server.listen(serverport);
     // Start live reload

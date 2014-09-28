@@ -45,6 +45,10 @@ module.exports = function(ns) {
                 $scope.progressStyle = 'danger';
             }
 
+            $scope.maxClock = MAX_HEALTH;
+            $scope.clock = MAX_HEALTH - healthState;
+            $scope.currentNumber = currentNumber;
+            $scope.possiblePoints = $scope.clock * currentNumber;
             $scope.$apply();
 
             healthState++;
@@ -128,7 +132,7 @@ module.exports = function(ns) {
                 .transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
 
             if(!result) {
-                $scope.points = Math.max(0, $scope.points - currentNumber);
+                $scope.points = Math.max(0, $scope.points - $scope.possiblePoints);
                 lifeCtr--;
                 $($('.life')[lifeCtr]).css('opacity', 0);
 
@@ -140,7 +144,7 @@ module.exports = function(ns) {
                 colorHighlight(points, 'black', 'red');
             }
             else {
-                $scope.points += currentNumber;
+                $scope.points += $scope.possiblePoints;
                 $scope.rounds++;
 
                 colorHighlight(points, 'black', 'green');
