@@ -1,8 +1,9 @@
 ## NGM1
 
 This is a simple mobile browser based game made with Angular.js, d3 and browserify
+
 (The repo is based on [angular-gulp-browserify-livereload-boilerplate](https://github.com/Hyra/angular-gulp-browserify-livereload-boilerplate)
-from [Hyra](https://github.com/Hyra), [see also this great post from him](http://mindthecode.com/lets-build-an-angularjs-app-with-browserify-and-gulp/)
+from [Hyra](https://github.com/Hyra), [see also this great post from him](http://mindthecode.com/lets-build-an-angularjs-app-with-browserify-and-gulp/))
 
 ## Installation
 
