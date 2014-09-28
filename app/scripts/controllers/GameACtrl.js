@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(ns) {
     ns.gameACtrl = ns.services.controller('GameACtrl', function ($scope, $route, $location) {
         var GROUP_INCREASE_INTERVAL = 10000;
@@ -257,3 +259,7 @@ module.exports = function(ns) {
         startBubble();
     });
 };
+
+if(typeof(com_geekAndPoke_Ngm1) !== 'undefined') {
+    module.exports(com_geekAndPoke_Ngm1);
+}

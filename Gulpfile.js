@@ -14,7 +14,8 @@ var express = require('express'),
     refresh = require('gulp-livereload'),
     livereload = require('connect-livereload'),
     livereloadport = 35729,
-    serverport = 5000;
+    serverport = 5000,
+    devServerport = 5001;
 
 // Set up an express server (not starting it yet)
 var server = express();
@@ -26,6 +27,10 @@ server.use(express.static('./dist'));
 server.all('/*', function (req, res) {
     res.sendfile('index.html', { root: 'dist' });
 });
+
+var devServer = express();
+// Use our 'dist' folder as rootfolder
+devServer.use(express.static('.'));
 
 // Dev task
 gulp.task('dev', ['clean', 'views', 'styles', 'lint', 'browserify'], function () {
@@ -107,6 +112,10 @@ gulp.task('watch', ['lint'], function () {
 
     gulp.watch('./dist/**').on('change', refresh.changed);
 
+});
+
+gulp.task('devserver', [], function() {
+    devServer.listen(devServerport);
 });
 
 gulp.task('default', ['dev', 'watch']);

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(ns) {
     ns.gameOverCtrl = ns.services.controller('GameOverCtrl', function ($scope) {
         var INSERT_TEXT_HERE_CLASS = 'insert-text-here';
@@ -85,3 +87,7 @@ module.exports = function(ns) {
         force.on("tick", tick);
     });
 };
+
+if(typeof(com_geekAndPoke_Ngm1) !== 'undefined') {
+    module.exports(com_geekAndPoke_Ngm1);
+}

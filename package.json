@@ -4,8 +4,10 @@
   "devDependencies": {
     "angular": "~1.2.16",
     "angular-route": "^1.2.17-build.163.1",
+    "bootstrap": "^3.2.0",
     "browserify": "~3.46.0",
     "connect-livereload": "~0.4.0",
+    "d3": "^3.4.11",
     "express": "~4.1.1",
     "gulp": "~3.8.8",
     "gulp-autoprefixer": "0.0.7",
@@ -19,6 +21,7 @@
     "gulp-rimraf": "~0.1.0",
     "gulp-sass": "~0.7.1",
     "gulp-util": "~2.2.14",
+    "jquery": "^2.1.1",
     "tiny-lr": "0.0.7"
   },
   "engines": {

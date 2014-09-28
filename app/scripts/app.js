@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function (ns) {
 
     ns.app = angular.module('ngm1', [
@@ -24,3 +26,7 @@ module.exports = function (ns) {
             });
     });
 };
+
+if(typeof(com_geekAndPoke_Ngm1) !== 'undefined') {
+    module.exports(com_geekAndPoke_Ngm1);
+}
