@@ -10,6 +10,18 @@ This is a simple mobile browser based game made with Angular.js, d3 and browseri
 
     npm install
 
-    gulp dev
+    gulp watch
+    
+## dist and dev 
+
+Now you 2 servers running
+
+dev server (with a no-browserified version):
+
+    http://localhost:5001/app/index-dev.html
+    
+dist server (with a browserified version):
+
+    http://localhost:5000
 
     
