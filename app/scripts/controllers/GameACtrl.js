@@ -2,6 +2,8 @@
 
 module.exports = function(ns) {
     ns.gameACtrl = ns.services.controller('GameACtrl', function ($scope, $route, $location, AppContext) {
+        ns.util.clearTimer(AppContext);
+
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 5;
         var MAX_NUMBER = 100;
