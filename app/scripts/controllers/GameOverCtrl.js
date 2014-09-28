@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(ns) {
-    ns.gameOverCtrl = ns.services.controller('GameOverCtrl', function ($scope) {
+    ns.gameOverCtrl = ns.services.controller('GameOverCtrl', function ($scope, AppContext) {
         var INSERT_TEXT_HERE_CLASS = 'insert-text-here';
         var NON_HREF_CLASS = 'non-href';
         var WITH_HREF_CLASS = 'with-href';
@@ -21,8 +21,8 @@ module.exports = function(ns) {
             .attr("width", width)
             .attr("height", height);
 
-        var points = $scope.$root.points;
-        var rounds = $scope.$root.rounds;
+        var points = AppContext.points;
+        var rounds = AppContext.rounds;
 
         if(!ns.util.isDefined(points)) points = '-';
         if(!ns.util.isDefined(rounds)) rounds = '-';

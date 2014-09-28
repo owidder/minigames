@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(ns) {
-    ns.gameACtrl = ns.services.controller('GameACtrl', function ($scope, $route, $location) {
+    ns.gameACtrl = ns.services.controller('GameACtrl', function ($scope, $route, $location, AppContext) {
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 5;
         var MAX_NUMBER = 100;
@@ -28,6 +28,12 @@ module.exports = function(ns) {
 
         var lastNumbers = {};
 
+        function computePossiblePoints() {
+            $scope.clock = MAX_HEALTH - healthState;
+            $scope.currentNumber = currentNumber;
+            $scope.possiblePoints = $scope.clock * currentNumber;
+        }
+
         function healthCounter() {
             var progress;
             progress = (100 / MAX_HEALTH) * healthState;
@@ -45,10 +51,7 @@ module.exports = function(ns) {
                 $scope.progressStyle = 'danger';
             }
 
-            $scope.maxClock = MAX_HEALTH;
-            $scope.clock = MAX_HEALTH - healthState;
-            $scope.currentNumber = currentNumber;
-            $scope.possiblePoints = $scope.clock * currentNumber;
+            computePossiblePoints();
             $scope.$apply();
 
             healthState++;
@@ -158,8 +161,8 @@ module.exports = function(ns) {
         }
 
         function gameOver() {
-            $scope.$root.points = $scope.points;
-            $scope.$root.rounds = $scope.rounds;
+            AppContext.points = $scope.points;
+            AppContext.rounds = $scope.rounds;
             $location.path('/gameOver');
             $scope.$apply();
         }
@@ -224,6 +227,8 @@ module.exports = function(ns) {
                 force.on("tick", tick);
 
                 healthState = 0;
+                computePossiblePoints();
+                $scope.$apply();
                 timer = setInterval(healthCounter, TIMER_TICK_DURATION);
             }, delay);
         }
@@ -253,6 +258,7 @@ module.exports = function(ns) {
         $scope.level = 0;
 
         $scope.points = 0;
+        $scope.maxClock = MAX_HEALTH;
         $scope.rounds = 0;
 
         points = d3.select('#points');
