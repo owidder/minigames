@@ -87,7 +87,3 @@ module.exports = function(ns) {
         force.on("tick", tick);
     });
 };
-
-if(typeof(com_geekAndPoke_Ngm1) !== 'undefined') {
-    module.exports(com_geekAndPoke_Ngm1);
-}

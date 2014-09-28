@@ -259,7 +259,3 @@ module.exports = function(ns) {
         startBubble();
     });
 };
-
-if(typeof(com_geekAndPoke_Ngm1) !== 'undefined') {
-    module.exports(com_geekAndPoke_Ngm1);
-}

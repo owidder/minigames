@@ -18,7 +18,3 @@ module.exports = function (ns) {
         isDefined: isDefined
     };
 };
-
-if(typeof(com_geekAndPoke_Ngm1) !== 'undefined') {
-    module.exports(com_geekAndPoke_Ngm1);
-}
