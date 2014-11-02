@@ -1,4 +1,4 @@
-## NGM1
+## Minigames
 
 This is a simple mobile browser based game made with Angular.js, d3 and browserify
 
@@ -6,6 +6,8 @@ This is a simple mobile browser based game made with Angular.js, d3 and browseri
 from [Hyra](https://github.com/Hyra), [see also this great post from him](http://mindthecode.com/lets-build-an-angularjs-app-with-browserify-and-gulp/))
 
 ## Installation
+
+    npm install -g gulp (if not already there)
 
     clone this repo
 
