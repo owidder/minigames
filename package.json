@@ -1,5 +1,5 @@
 {
-  "name": "angular-gulp-browserify-livereload-boilerplate",
+  "name": "minigames",
   "version": "0.0.1",
   "devDependencies": {
     "angular": "~1.2.16",
@@ -26,5 +26,43 @@
   },
   "engines": {
     "node": ">=0.10.0"
-  }
+  },
+  "description": "This is a simple mobile browser based game made with Angular.js, d3 and browserify",
+  "main": "app/app.js",
+  "dependencies": {
+    "angular": "^1.2.23",
+    "angular-route": "^1.3.1",
+    "bootstrap": "^3.3.0",
+    "browserify": "^3.46.1",
+    "connect-livereload": "^0.4.1",
+    "d3": "^3.4.13",
+    "express": "^4.1.2",
+    "gulp": "^3.8.9",
+    "gulp-autoprefixer": "^0.0.7",
+    "gulp-browserify": "^0.5.0",
+    "gulp-clean": "^0.3.1",
+    "gulp-concat": "^2.2.0",
+    "gulp-embedlr": "^0.5.2",
+    "gulp-jshint": "^1.5.6",
+    "gulp-livereload": "^2.1.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-rimraf": "^0.1.1",
+    "gulp-sass": "^0.7.3",
+    "gulp-util": "^2.2.20",
+    "jquery": "^2.1.1",
+    "tiny-lr": "^0.0.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:owidder/minigames.git"
+  },
+  "author": "oliver widder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/owidder/minigames/issues"
+  },
+  "homepage": "https://github.com/owidder/minigames"
 }

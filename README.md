@@ -7,6 +7,8 @@ from [Hyra](https://github.com/Hyra), [see also this great post from him](http:/
 
 ## Installation
 
+    npm install -g gulp (if not already there)
+
     clone this repo
 
     checkout this branch
