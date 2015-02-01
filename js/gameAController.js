@@ -4,11 +4,11 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
     var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', function ($scope, $route, $location) {
         var GROUP_INCREASE_INTERVAL = 10000;
-        var MAX_NUMBER_OF_GROUPS = 5;
+        var MAX_NUMBER_OF_GROUPS = 10;
         var MAX_NUMBER = 100;
         var MAX_HEALTH = 5;
         var TIMER_TICK_DURATION = 1000;
-        var NUMBER_OF_LIFES = 3;
+        var NUMBER_OF_LIFES = 1;
         var COLOR_HIGHLIGHT_IN = 500;
         var COLOR_HIGHLIGHT_OUT = 500;
 
@@ -23,7 +23,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var progressBar, timer;
         var healthState = 0, lifeCtr;
         var currentNumber, currentGroup;
-        var points, rounds;
+        // var points;
+        var rounds;
         var lastGroupIncreaseTime;
         var currentNumberOfGroups = 1;
 
@@ -71,7 +72,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function showResult(isTimeOut, x) {
-            var thumb, result;
+            var thumb;
+            var result;
             if(!isTimeOut && evaluate(x)) {
                 thumb = thumbsUp;
                 result = true;
@@ -129,22 +131,22 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 .transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
 
             if(!result) {
-                $scope.points = Math.max(0, $scope.points - currentNumber);
+                // $scope.points = Math.max(0, $scope.points - currentNumber);
                 lifeCtr--;
-                $($('.life')[lifeCtr]).css('opacity', 0);
+                // $($('.life')[lifeCtr]).css('opacity', 0);
 
                 if(lifeCtr <= 0) {
                     gameOver();
                     return;
                 }
 
-                colorHighlight(points, 'black', 'red');
+                // colorHighlight(points, 'black', 'red');
             }
             else {
-                $scope.points += currentNumber;
+                // $scope.points += currentNumber;
                 $scope.rounds++;
 
-                colorHighlight(points, 'black', 'green');
+                // colorHighlight(points, 'black', 'green');
                 colorHighlight(rounds, 'black', 'green');
             }
 
@@ -155,7 +157,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function gameOver() {
-            $scope.$root.points = $scope.points;
+            // $scope.$root.points = $scope.points;
             $scope.$root.rounds = $scope.rounds;
             $location.path('/gameOver');
             $scope.$apply();
@@ -249,10 +251,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         lastGroupIncreaseTime = (new Date()).valueOf();
         $scope.level = 0;
 
-        $scope.points = 0;
+        // $scope.points = 0;
         $scope.rounds = 0;
 
-        points = d3.select('#points');
+        // points = d3.select('#points');
         rounds = d3.select('#rounds');
 
         d3.select('#countdown').style({'font-size': height/10 + 'px'});
