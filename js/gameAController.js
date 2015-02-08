@@ -35,8 +35,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             progress = (100 / MAX_HEALTH) * healthState;
             progressBar.attr('aria-valuenow', progress).style({'width': progress + '%', 'height': height / 20 + 'px'});
 
-            console.log('progress: ' + progress);
-
             if(healthState < MAX_HEALTH/2) {
                 $scope.progressStyle = 'success';
             }

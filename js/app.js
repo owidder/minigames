@@ -21,7 +21,7 @@ com_geekAndPoke_Ngm1.app = (function() {
             })
             .when('/menu', {
                 templateUrl: 'partials/menu.html',
-                controller: 'GameOverController'
+                controller: 'MenuController'
             })
             .otherwise({
                 redirectTo: '/g1'

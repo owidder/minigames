@@ -29,10 +29,10 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         if(!util.isDefined(rounds)) rounds = '-';
 
         var bubbles = {
-            nodes: [{name:'P:' + points, group:0, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'green'},
-                {name:'R:' + rounds, group:4, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'blue'},
-                {name: 'New Game', group:2, clazz:WITH_HREF_CLASS, href:'#/g1', color:'red'},
-                {name: 'Menu', group:3, clazz:WITH_HREF_CLASS, href:'#/menu', color:'orange'}],
+            nodes: [{name:'', group:0, clazz:NON_HREF_CLASS, color:'blue'},
+                {name:rounds, group:4, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'green'},
+                {name: 'NumBubbs', group:2, clazz:WITH_HREF_CLASS, href:'#/menu', color:'red'},
+                {name: '', group:3, clazz:NON_HREF_CLASS, color:'orange'}],
             links: [
                 {source:3, target:1, value:1},
                 {source:3, target:2, value:1},
