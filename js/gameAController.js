@@ -6,7 +6,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 10;
         var MAX_NUMBER = 100;
-        var MAX_HEALTH = 5;
+        var MAX_HEALTH = 3;
         var TIMER_TICK_DURATION = 1000;
         var NUMBER_OF_LIFES = 1;
         var COLOR_HIGHLIGHT_IN = 500;
@@ -32,13 +32,15 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         function healthCounter() {
             var progress;
+
+            healthState++;
             progress = (100 / MAX_HEALTH) * healthState;
             progressBar.attr('aria-valuenow', progress).style({'width': progress + '%', 'height': height / 20 + 'px'});
 
-            if(healthState < MAX_HEALTH/2) {
+            if(healthState < 2) {
                 $scope.progressStyle = 'success';
             }
-            else if (healthState < 2*MAX_HEALTH/3) {
+            else if (healthState < MAX_HEALTH) {
                 $scope.progressStyle = 'warning';
             }
             else {
@@ -47,7 +49,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             $scope.$apply();
 
-            healthState++;
             if(healthState > MAX_HEALTH) {
                 healthState = 0;
                 roundEnd(true);
@@ -221,6 +222,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 force.on("tick", tick);
 
                 healthState = 0;
+                healthCounter();
                 timer = setInterval(healthCounter, TIMER_TICK_DURATION);
             }, delay);
         }

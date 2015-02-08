@@ -31,7 +31,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         var bubbles = {
             nodes: [{name:'', group:0, clazz:NON_HREF_CLASS, color:'blue'},
                 {name:rounds, group:4, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'green'},
-                {name: 'Swipy', group:2, clazz:WITH_HREF_CLASS, href:'#/gAStart', color:'red'},
+                {name: 'Swypi', group:2, clazz:WITH_HREF_CLASS, href:'#/gAStart', color:'red'},
                 {name: '', group:3, clazz:NON_HREF_CLASS, color:'orange'}],
             links: [
                 {source:3, target:1, value:1},
