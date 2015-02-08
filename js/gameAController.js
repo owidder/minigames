@@ -13,13 +13,13 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var COLOR_HIGHLIGHT_OUT = 500;
 
         var BUBBLE_FADE_OUT_TIME = 300;
-        var THUMB_FADE_IN_TIME = 200;
-        var THUMB_FADE_OUT_TIME = 500;
-        var THUMB_OPACITY = 0.2;
+        var DISPLAY_FADE_IN_TIME = 200;
+        var DISPLAY_FADE_OUT_TIME = 500;
+        var DISPLAY_OPACITY = 0.2;
 
         var isInNewBubblePhase = true;
         var isGameOver = false;
-        var force, svg, g, circle, width, height, middleX, thumbsUp, thumbsDown;
+        var force, svg, g, circle, width, height, middleX, roundDisplay;
         var progressBar, timer;
         var healthState = 0, lifeCtr;
         var currentNumber, currentGroup;
@@ -71,21 +71,12 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function showResult(isTimeOut, x) {
-            var thumb;
-            var result;
-            if(!isTimeOut && evaluate(x)) {
-                thumb = thumbsUp;
-                result = true;
-            }
-            else {
-                thumb = thumbsDown;
-                result = false;
-            }
+            var result = (!isTimeOut && evaluate(x));
 
-            thumb
+            roundDisplay
                 .attr('opacity', 0.0)
-                .transition().duration(THUMB_FADE_IN_TIME).style({'opacity': THUMB_OPACITY})
-                .transition().duration(THUMB_FADE_OUT_TIME).style({'opacity': 0.0});
+                .transition().duration(DISPLAY_FADE_IN_TIME).style({'opacity': DISPLAY_OPACITY})
+                .transition().duration(DISPLAY_FADE_OUT_TIME).style({'opacity': 0.0});
 
             return result;
         }
@@ -237,12 +228,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             .attr("width", width)
             .attr("height", height);
 
-        d3.selectAll('.thumb').style({'font-size': height+'px'});
-        thumbsDown = d3.select(".thumb.loose");
-        thumbsUp = d3.select('.thumb.win');
+        d3.selectAll('.display').style({'font-size': height+'px'});
+        roundDisplay = d3.select(".round-display");
 
-        thumbsDown.style({'opacity': 0});
-        thumbsUp.style({'opacity': 0});
+        roundDisplay.style({'opacity': 0});
 
         progressBar = d3.select('.progress-bar');
 
