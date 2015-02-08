@@ -1,0 +1,79 @@
+body {
+    padding: 10px !important;
+}
+
+.bubble-0 > circle {
+    fill: green;
+}
+
+.bubble-1 > circle {
+    fill: cyan;
+}
+
+.bubble-2 > circle {
+    fill: blue;
+}
+
+.bubble-3 > circle {
+    fill: yellow;
+}
+
+.bubble-4 > circle {
+    fill: orange;
+}
+
+.bubble-5 > circle {
+    fill: purple;
+}
+
+.bubble-6 > circle {
+    fill: red;
+}
+
+.bubble-7 > circle {
+    fill: brown;
+}
+
+.bubble-8 > circle {
+    fill: grey;
+}
+
+.bubble-9 > circle {
+    fill: black;
+}
+
+.bubble > text {
+    fill: white;
+}
+
+.display {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.win {
+    color: green;
+}
+
+.loose {
+    color: red;
+}
+
+#countdown {
+    top: 0px;
+    left: 0px;
+    opacity: 0.5;
+}
+
+#field {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.hide {
+    display:none;
+}
+
+.show {
+}
