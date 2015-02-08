@@ -11,7 +11,7 @@ com_geekAndPoke_Ngm1.app = (function() {
         $locationProvider.html5Mode(false);
 
         $routeProvider.
-            when('/g1', {
+            when('/gA', {
                 templateUrl: 'partials/gameA.html',
                 controller: 'GameAController'
             })
@@ -19,12 +19,12 @@ com_geekAndPoke_Ngm1.app = (function() {
                 templateUrl: 'partials/gameOver.html',
                 controller: 'GameOverController'
             })
-            .when('/menu', {
-                templateUrl: 'partials/menu.html',
-                controller: 'MenuController'
+            .when('/gAStart', {
+                templateUrl: 'partials/gameAStart.html',
+                controller: 'GameAStartController'
             })
             .otherwise({
-                redirectTo: '/g1'
+                redirectTo: '/gameOver'
             });
     });
 
