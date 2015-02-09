@@ -12,7 +12,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var COLOR_HIGHLIGHT_IN = 500;
         var COLOR_HIGHLIGHT_OUT = 500;
 
-        var NON_NUMBER_PROBABILITY = 0.05;
+        var NON_NUMBER_PROBABILITY = 0.00;
         var NON_NUMBERS = ['#', '*', '+', '?', '$', '='];
 
         var BUBBLE_FADE_OUT_TIME = 300;
