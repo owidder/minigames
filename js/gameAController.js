@@ -12,6 +12,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var COLOR_HIGHLIGHT_IN = 500;
         var COLOR_HIGHLIGHT_OUT = 500;
 
+        var NON_NUMBER_PROBABILITY = 0.1;
+        var NON_NUMBERS = ['#', '*', '+', '?', '$', '='];
+
         var BUBBLE_FADE_OUT_TIME = 300;
         var DISPLAY_FADE_IN_TIME = 200;
         var DISPLAY_FADE_OUT_TIME = 500;
@@ -70,8 +73,19 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }
         }
 
+        function dontTouch() {
+            return !util.isNumeric(currentNumber);
+        }
+
         function showResult(isTimeOut, x) {
-            var result = (!isTimeOut && evaluate(x));
+            var result;
+
+            if(dontTouch()) {
+                result = isTimeOut;
+            }
+            else {
+                result = (!isTimeOut && evaluate(x));
+            }
 
             roundDisplay
                 .attr('opacity', 0.0)
@@ -167,6 +181,19 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             })
         }
 
+        function nextNumberOrNonNumber() {
+            var numberOrNonNumber, nonNumberIndex;
+            if(Math.random() < NON_NUMBER_PROBABILITY) {
+                nonNumberIndex = Math.floor(Math.random() * NON_NUMBERS.length);
+                numberOrNonNumber = NON_NUMBERS[nonNumberIndex];
+            }
+            else {
+                numberOrNonNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+            }
+
+            return numberOrNonNumber;
+        }
+
         function startBubble(delay) {
             if(util.isDefined(g)) {
                 g.remove();
@@ -174,7 +201,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             setTimeout(function() {
                 currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
-                currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+
+                currentNumber = nextNumberOrNonNumber();
 
                 var bubbles = {
                     nodes: [{name:currentNumber, group:currentGroup}],

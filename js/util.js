@@ -4,6 +4,10 @@ com_geekAndPoke_Ngm1.util = (function () {
         return typeof(o) !== 'undefined';
     }
 
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     function clearSvg() {
         var svg = d3.select("svg");
         if(!svg.empty()) {
@@ -14,6 +18,7 @@ com_geekAndPoke_Ngm1.util = (function () {
 
     return {
         clearSvg: clearSvg,
-        isDefined: isDefined
+        isDefined: isDefined,
+        isNumeric: isNumeric
     };
 })();
