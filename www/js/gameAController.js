@@ -12,7 +12,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var COLOR_HIGHLIGHT_IN = 500;
         var COLOR_HIGHLIGHT_OUT = 500;
 
-        var NON_NUMBER_PROBABILITY = 0.1;
+        var NON_NUMBER_PROBABILITY = 0.0;
         var NON_NUMBERS = ['#', '*', '+', '?', '$', '='];
 
         var BUBBLE_FADE_OUT_TIME = 300;
@@ -58,7 +58,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }
         }
 
-        
+
 
         function evaluate(x) {
             var lastNumber;
@@ -67,7 +67,11 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             if(typeof(lastNumber) === 'undefined') {
                 return true;
             }
-            if(x < middleX) {
+
+            if(!util.isNumeric(lastNumber)) {
+                return true;
+            }
+            else if(x < middleX) {
                 return (currentNumber <= lastNumber);
             }
             else {
@@ -258,7 +262,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             .attr("width", width)
             .attr("height", height);
 
-        d3.selectAll('.display').style({'font-size': height+'px'});
+        d3.selectAll('.display').style({'font-size': height/2+'px'});
         roundDisplay = d3.select(".round-display");
 
         roundDisplay.style({'opacity': 0});
