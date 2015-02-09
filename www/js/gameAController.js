@@ -12,7 +12,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var COLOR_HIGHLIGHT_IN = 500;
         var COLOR_HIGHLIGHT_OUT = 500;
 
-        var NON_NUMBER_PROBABILITY = 0.0;
+        var NON_NUMBER_PROBABILITY = 0.05;
         var NON_NUMBERS = ['#', '*', '+', '?', '$', '='];
 
         var BUBBLE_FADE_OUT_TIME = 300;
@@ -26,6 +26,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var progressBar, timer;
         var healthState = 0, lifeCtr;
         var currentNumber, currentGroup;
+        var nonNumber;
         // var points;
         var rounds;
         var lastGroupIncreaseTime;
@@ -79,14 +80,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }
         }
 
-        function dontTouch() {
-            return !util.isNumeric(currentNumber);
-        }
-
         function showResult(isTimeOut, x) {
             var result;
 
-            if(dontTouch()) {
+            if(nonNumber) {
                 result = isTimeOut;
             }
             else {
@@ -187,31 +184,29 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             })
         }
 
-        function nextNumberOrNonNumber() {
-            var numberOrNonNumber, nonNumberIndex;
-            if(Math.random() < NON_NUMBER_PROBABILITY) {
-                nonNumberIndex = Math.floor(Math.random() * NON_NUMBERS.length);
-                numberOrNonNumber = NON_NUMBERS[nonNumberIndex];
-            }
-            else {
-                numberOrNonNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
-            }
-
-            return numberOrNonNumber;
-        }
-
         function startBubble(delay) {
             if(util.isDefined(g)) {
                 g.remove();
             }
 
             setTimeout(function() {
+                var bubbletext, symbolIndex;
+
                 currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
 
-                currentNumber = nextNumberOrNonNumber();
+                if(Math.random() > NON_NUMBER_PROBABILITY) {
+                    currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+                    nonNumber = false;
+                    bubbletext = currentNumber;
+                }
+                else {
+                    nonNumber = true;
+                    symbolIndex = Math.floor(Math.random() * NON_NUMBERS.length);
+                    bubbletext = NON_NUMBERS[symbolIndex];
+                }
 
                 var bubbles = {
-                    nodes: [{name:currentNumber, group:currentGroup}],
+                    nodes: [{name:bubbletext, group:currentGroup}],
                     links: []
                 };
 
