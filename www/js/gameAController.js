@@ -12,9 +12,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var COLOR_HIGHLIGHT_IN = 500;
         var COLOR_HIGHLIGHT_OUT = 500;
 
-        var NON_NUMBER_PROBABILITY = 0.00;
-        var NON_NUMBERS = ['#', '*', '+', '?', '$', '='];
-
         var BUBBLE_FADE_OUT_TIME = 300;
         var DISPLAY_FADE_IN_TIME = 200;
         var DISPLAY_FADE_OUT_TIME = 500;
@@ -26,7 +23,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var progressBar, timer;
         var healthState = 0, lifeCtr;
         var currentNumber, currentGroup;
-        var nonNumber;
         // var points;
         var rounds;
         var lastGroupIncreaseTime;
@@ -82,13 +78,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         function showResult(isTimeOut, x) {
             var result;
-
-            if(nonNumber) {
-                result = isTimeOut;
-            }
-            else {
-                result = (!isTimeOut && evaluate(x));
-            }
+            result = (!isTimeOut && evaluate(x));
 
             roundDisplay
                 .attr('opacity', 0.0)
@@ -190,20 +180,12 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }
 
             setTimeout(function() {
-                var bubbletext, symbolIndex;
+                var bubbletext;
 
                 currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
 
-                if(Math.random() > NON_NUMBER_PROBABILITY) {
-                    currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
-                    nonNumber = false;
-                    bubbletext = currentNumber;
-                }
-                else {
-                    nonNumber = true;
-                    symbolIndex = Math.floor(Math.random() * NON_NUMBERS.length);
-                    bubbletext = NON_NUMBERS[symbolIndex];
-                }
+                currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
+                bubbletext = currentNumber;
 
                 var bubbles = {
                     nodes: [{name:bubbletext, group:currentGroup}],
@@ -257,7 +239,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             .attr("width", width)
             .attr("height", height);
 
-        d3.selectAll('.display').style({'font-size': height/2+'px'});
+        d3.selectAll('.display').style({'font-size': height/3+'px'});
         roundDisplay = d3.select(".round-display");
 
         roundDisplay.style({'opacity': 0});

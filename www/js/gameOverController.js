@@ -80,6 +80,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             .append("text")
             .text(function(d) { return d.name; })
             .style("font-size", function(d) { return Math.min(0.5*radius, (0.5*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
+            .style("fill", "white")
             .attr("dx", "-.9em")
             .attr("dy", ".35em");
 
