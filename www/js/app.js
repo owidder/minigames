@@ -15,6 +15,10 @@ com_geekAndPoke_Ngm1.app = (function() {
                 templateUrl: 'partials/gameA.html',
                 controller: 'GameAController'
             })
+            .when('/gB', {
+                templateUrl: 'partials/gameB.html',
+                controller: 'GameBController'
+            })
             .when('/gameOver', {
                 templateUrl: 'partials/gameOver.html',
                 controller: 'GameOverController'

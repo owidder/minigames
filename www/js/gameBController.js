@@ -3,7 +3,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
-    var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', function ($scope, $route, $location) {
+    var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 10;
         var MAX_NUMBER = 100;
