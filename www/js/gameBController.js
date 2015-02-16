@@ -3,17 +3,25 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
-    var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
+    var gameBController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
+        var LINK_PROBABILITY = 0.0;
+
+
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER_OF_GROUPS = 10;
         var MAX_NUMBER = 100;
+        var START_NUMBER_OF_BUBBLES = 20;
         var NUMBER_OF_LIFES = 1;
 
         var BUBBLE_FADE_OUT_TIME = 300;
 
         var isInNewBubblePhase = true;
         var isGameOver = false;
-        var force, svg, g, circle, width, height, middleX, roundDisplay;
+        var force, svg, circle, width, height, middleX, roundDisplay;
+        var radius;
+        var bubbles;
+        var bubblesData;
+        var force;
         var lifeCtr;
         var currentNumber, currentGroup;
         var lastGroupIncreaseTime;
@@ -100,71 +108,127 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             $scope.$apply();
         }
 
-        function tick() {
-            g.attr("transform", function(d) {
-                if(!isGameOver) {
-                    if(isInNewBubblePhase && Math.abs(d.x - middleX) < width/8) {
-                        isInNewBubblePhase = false;
-                    }
-                    if(!isInNewBubblePhase && Math.abs(d.x - middleX) > width/4) {
-                        roundEnd(false, d.x);
-                    }
-                }
-                return "translate(" + d.x + "," + d.y + ")";
-            })
+        function cx(x) {
+            return Math.max(radius, Math.min(width - radius, x));
         }
 
-        function startBubble(delay) {
-            if(util.isDefined(g)) {
-                g.remove();
+        function cy(y) {
+            return Math.max(radius, Math.min(height - radius, y));
+        }
+
+        function tick() {
+            bubbles.attr("transform", function(d) { return "translate(" + cx(d.x) + "," + cy(d.y) + ")"; });
+        }
+
+        function removeNodeFromArry(nodeToRemove) {
+            var i, currentNode;
+            for(i = 0; i < bubblesData.nodes.length; i++) {
+                currentNode = bubblesData.nodes[i];
+                if(currentNode.id == nodeToRemove.id) {
+                    break;
+                }
             }
 
-            setTimeout(function() {
-                var bubbletext;
+            if(i < bubblesData.nodes.length) {
+                bubblesData.nodes.splice(i, 1);
+            }
+        }
 
-                currentGroup = Math.floor(Math.random() * currentNumberOfGroups);
+        function removeBubblefromField(node) {
+            var bubble = d3.select(".id-" + node.id);
+            if(bubble != null) {
+                bubble
+                    .attr('opacity', 1)
+                    .transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
+            }
+        }
 
-                currentNumber = Math.floor(Math.random() * (MAX_NUMBER + 1));
-                bubbletext = currentNumber;
+        function clickedOnNode(node) {
+            removeNodeFromArry(node);
+            removeBubblefromField(node);
+            start();
+        }
 
-                var bubbles = {
-                    nodes: [{name:bubbletext, group:currentGroup}],
-                    links: []
+        function start() {
+            var g;
+
+            bubbles = bubbles.data(force.nodes(), function(d) {return d.id;});
+
+            g = bubbles.enter()
+                .append("g")
+                .attr("class", function(d) {return "bubble bubble-" + d.group + " id-" + d.id})
+                .attr("transform", function(d) { return "translate(" + cx(d.x) + "," + cy(d.y) + ")"; })
+                .call(force.drag);
+
+            g.append("circle")
+                .attr("r", radius)
+                .on("click", function(d) {
+                    if (d3.event.defaultPrevented) return; // ignore drag
+                    clickedOnNode(d);
+                });
+
+            g.append("text")
+                .text(function (d) {
+                    return d.name;
+                })
+                .style("font-size", radius + "px")
+                .attr("dx", "-.9em")
+                .attr("dy", ".35em");
+
+            bubbles.exit().remove();
+
+            force.on("tick", tick);
+        }
+
+        function startGame() {
+            var nodes = [], links = [];
+            var i, j;
+            var bubbleValue, group;
+            var node, link;
+
+            for(i = 0; i < START_NUMBER_OF_BUBBLES; i++) {
+                bubbleValue = Math.floor(Math.random() * MAX_NUMBER);
+                group = Math.floor(Math.random() * constants.MAX_NUMBER_OF_GROUPS);
+                node = {
+                    name: bubbleValue,
+                    group: group,
+                    x: Math.floor(Math.random() * width),
+                    y: Math.floor(Math.random() * height),
+                    id: i
                 };
+                nodes.push(node);
 
-                force = d3.layout.force()
-                    .charge(-150)
-                    .linkDistance(10)
-                    .size([width, height]);
+                if(i > 0) {
+                    for (j = 0; j < i; j++) {
+                        if(Math.random() < LINK_PROBABILITY){
+                            link = {
+                                source: j,
+                                target: i,
+                                value: 1
+                            };
+                            links.push(link);
+                        }
+                    }
+                }
+            }
 
-                force
-                    .nodes(bubbles.nodes)
-                    .links(bubbles.links)
-                    .start();
+            bubblesData = {
+                nodes: nodes,
+                links: links
+            };
 
-                g = svg.selectAll(".bubble")
-                    .data(bubbles.nodes)
-                    .enter().append("g")
-                    .attr("class", function (d) {
-                        return "bubble bubble-" + d.group
-                    })
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                    .call(force.drag);
+            force = d3.layout.force()
+                .charge(-500)
+                .linkDistance(3*radius)
+                .size([width, height]);
 
-                var radius = Math.min(width, height) / 3;
+            force
+                .nodes(bubblesData.nodes)
+                .links(bubblesData.links)
+                .start();
 
-                circle = g.append("circle").attr("r", radius);
-
-                g.append("text")
-                    .text(function(d) { return d.name; })
-                    .style("font-size", radius + "px")
-                    .attr("dx", "-.9em")
-                    .attr("dy", ".35em");
-
-                force.on("tick", tick);
-
-                healthCounter.start();
-            }, delay);
+            bubbles = svg.selectAll(".bubble");
+            start();
         }
 
         $scope.result = 'none';
@@ -172,6 +236,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         height = $(window).height();
         width = $(window).width();
         middleX = width / 2;
+        radius = Math.min(width, height) / 10;
+
 
         svg = d3.select("#field").append("svg")
             .attr("width", width)
@@ -180,14 +246,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         lifeCtr = NUMBER_OF_LIFES;
 
         lastGroupIncreaseTime = (new Date()).valueOf();
-        $scope.level = 0;
 
-        $scope.rounds = 0;
-
-        rounds = d3.select('#rounds');
-
-        startBubble(BUBBLE_FADE_OUT_TIME);
+        startGame();
     });
 
-    return gameAController;
+    return gameBController;
 })();

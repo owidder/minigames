@@ -5,7 +5,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
     var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', function ($scope, $route, $location) {
         var GROUP_INCREASE_INTERVAL = 10000;
-        var MAX_NUMBER_OF_GROUPS = 10;
         var MAX_NUMBER = 100;
         var NUMBER_OF_LIFES = 1;
 
@@ -44,7 +43,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function maybeIncreaseNumberOfGroups() {
-            if(currentNumberOfGroups >= MAX_NUMBER_OF_GROUPS) {
+            if(currentNumberOfGroups >= constants.MAX_NUMBER_OF_GROUPS) {
                 return;
             }
             var currentMillis = (new Date()).valueOf();
@@ -180,11 +179,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         lifeCtr = NUMBER_OF_LIFES;
 
         lastGroupIncreaseTime = (new Date()).valueOf();
-        $scope.level = 0;
-
-        $scope.rounds = 0;
-
-        rounds = d3.select('#rounds');
 
         startBubble(BUBBLE_FADE_OUT_TIME);
     });
