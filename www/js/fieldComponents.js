@@ -43,7 +43,7 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
         this.reset = function () {
             clearInterval(timer);
             healthState = 0;
-        }
+        };
 
         this.start = function() {
             this.reset();
