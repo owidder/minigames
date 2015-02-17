@@ -14,7 +14,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var bubbles;
         var bubblesData;
         var force;
-        var biggestNumber = 0;
+        var numbers = [];
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
 
@@ -61,6 +61,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         function clickedOnNode(node) {
             if(isBiggestNumber(node.name)) {
+                removeBiggestNumber();
                 pointDisplay.increase();
                 removeNodeFromArry(node);
                 removeBubblefromField(node);
@@ -95,29 +96,38 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 })
                 .style("font-size", radius + "px")
                 .attr("dx", "-.9em")
-                .attr("dy", ".35em");
+                .attr("dy", ".35em")
+                .on("click", function(d) {
+                    if (d3.event.defaultPrevented) return; // ignore drag
+                    clickedOnNode(d);
+                });
 
             bubbles.exit().remove();
 
             force.on("tick", tick);
         }
 
-        function updateBiggestNumber(number) {
-            if(biggestNumber < number) {
-                biggestNumber = number;
-            }
+        function newNumber() {
+            var number = Math.floor(Math.random() * MAX_NUMBER);
+            numbers.push(number);
+            numbers.sort();
+
+            return number;
         }
 
         function isBiggestNumber(number) {
-            return (number == biggestNumber);
+            return (number == numbers[numbers.length-1]);
+        }
+
+        function removeBiggestNumber() {
+            numbers.splice(numbers.length-1, 1);
         }
 
         function newBubble(id) {
             var bubbleValue, group;
             var node;
 
-            bubbleValue = Math.floor(Math.random() * MAX_NUMBER);
-            updateBiggestNumber(bubbleValue);
+            bubbleValue = newNumber();
             group = Math.floor(Math.random() * constants.MAX_NUMBER_OF_GROUPS);
             node = {
                 name: bubbleValue,
