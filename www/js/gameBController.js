@@ -5,7 +5,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
     var gameBController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
         var MAX_NUMBER = 100;
+        var GROUP_SIZE = 5;
+        var MAX_NUMBER_OF_BUBBLES = 22;
         var START_NUMBER_OF_BUBBLES = 5;
+        var BUBBLE_CREATION_INTERVAL = 3000;
 
         var BUBBLE_FADE_OUT_TIME = 300;
 
@@ -15,10 +18,13 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var bubblesData;
         var force;
         var numbers = [];
+        var totalBubbleCounter = 0;
+        var timer;
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
 
         function gameOver() {
+            clearTimeout(timer);
             $scope.$root.points = pointDisplay.getPoints();
             $location.path('/gameOver');
             $scope.$apply();
@@ -33,7 +39,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function tick() {
-            bubbles.attr("transform", function(d) { return "translate(" + cx(d.x) + "," + cy(d.y) + ")"; });
+            bubbles.attr("transform", function(d) {
+                return "translate(" + cx(d.x) + "," + cy(d.y) + ")";
+            });
         }
 
         function removeNodeFromArry(nodeToRemove) {
@@ -110,7 +118,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         function newNumber() {
             var number = Math.floor(Math.random() * MAX_NUMBER);
             numbers.push(number);
-            numbers.sort();
+            numbers.sort(function sortNumber(a, b) {return a - b;});
 
             return number;
         }
@@ -123,21 +131,37 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             numbers.splice(numbers.length-1, 1);
         }
 
-        function newBubble(id) {
+        function createNewBubbleNode() {
             var bubbleValue, group;
             var node;
 
+            totalBubbleCounter++;
             bubbleValue = newNumber();
-            group = Math.floor(Math.random() * constants.MAX_NUMBER_OF_GROUPS);
+            group = Math.floor(numbers.length / GROUP_SIZE);
             node = {
                 name: bubbleValue,
                 group: group,
                 x: Math.floor(Math.random() * width),
                 y: Math.floor(Math.random() * height),
-                id: id
+                id: totalBubbleCounter
             };
 
             return node;
+        }
+
+        function createNewBubble() {
+            var node;
+
+            if(numbers.length > MAX_NUMBER_OF_BUBBLES) {
+                gameOver();
+            }
+
+            node = createNewBubbleNode();
+
+            force.stop();
+            bubblesData.nodes.push(node);
+            start();
+            force.start();
         }
 
         function startGame() {
@@ -146,7 +170,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             var node;
 
             for(i = 0; i < START_NUMBER_OF_BUBBLES; i++) {
-                node = newBubble(i);
+                node = createNewBubbleNode();
                 nodes.push(node);
             }
 
@@ -167,6 +191,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             bubbles = svg.selectAll(".bubble");
             start();
+
+            timer = setInterval(createNewBubble, BUBBLE_CREATION_INTERVAL);
         }
 
         $scope.result = 'none';
