@@ -6,9 +6,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var gameBController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
         var MAX_NUMBER = 100;
         var GROUP_SIZE = 5;
-        var MAX_NUMBER_OF_BUBBLES = 22;
+        var MAX_NUMBER_OF_BUBBLES = 20;
+        var MIN_NUMBER_OF_BUBBLES = 8;
         var START_NUMBER_OF_BUBBLES = 5;
-        var BUBBLE_CREATION_INTERVAL = 3000;
+        var BUBBLE_CREATION_INTERVAL = 2000;
 
         var BUBBLE_FADE_OUT_TIME = 300;
 
@@ -149,17 +150,22 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             return node;
         }
 
-        function createNewBubble() {
-            var node;
+        function createNewBubbles() {
+            var nodes = [], i;
 
             if(numbers.length > MAX_NUMBER_OF_BUBBLES) {
                 gameOver();
             }
 
-            node = createNewBubbleNode();
+            nodes.push(createNewBubbleNode());
+            if(numbers.length < MIN_NUMBER_OF_BUBBLES) {
+                for(i = numbers.length; i < MIN_NUMBER_OF_BUBBLES; i++) {
+                    nodes.push(createNewBubbleNode());
+                }
+            }
 
             force.stop();
-            bubblesData.nodes.push(node);
+            util.pushAll(bubblesData.nodes, nodes);
             start();
             force.start();
         }
@@ -192,7 +198,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             bubbles = svg.selectAll(".bubble");
             start();
 
-            timer = setInterval(createNewBubble, BUBBLE_CREATION_INTERVAL);
+            timer = setInterval(createNewBubbles, BUBBLE_CREATION_INTERVAL);
         }
 
         $scope.result = 'none';
