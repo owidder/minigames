@@ -55,41 +55,51 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
         this.reset();
     }
 
-    function PointDisplay(aScope) {
+    function GeneralDisplay(aScope, aCssSelect, aScopeProperty) {
         var DISPLAY_FADE_IN_TIME = 200;
         var DISPLAY_FADE_OUT_TIME = 500;
         var DISPLAY_OPACITY = 0.2;
 
         var display;
         var scope = aScope;
-        var points;
+        var cssSelect = aCssSelect;
+        var scopeProperty = aScopeProperty;
 
-        function show() {
-            scope.pointDisplay = points;
+        this.show = function(value) {
+            if(util.isSet(value)) {
+                scope[scopeProperty] = value;
+                scope.$apply();
+            }
+
             display
                 .attr('opacity', 0.0)
                 .transition().duration(DISPLAY_FADE_IN_TIME).style({'opacity': DISPLAY_OPACITY})
                 .transition().duration(DISPLAY_FADE_OUT_TIME).style({'opacity': 0.0});
 
-            scope.$apply();
-        }
+        };
+
+        display = d3.select(cssSelect);
+        display.style({'font-size': height/3+'px'});
+        display.style({'opacity': 0});
+    }
+
+    function PointDisplay(aScope) {
+        var points;
+
+        var generalDisplay = new GeneralDisplay(aScope, ".point-display", "pointDisplay");
 
         this.reset = function() {
             points = 0;
-        }
+        };
 
         this.increase = function() {
             points++;
-            show();
-        }
+            generalDisplay.show(points);
+        };
 
         this.getPoints = function() {
             return points;
-        }
-
-        display = d3.select(".display");
-        display.style({'font-size': height/3+'px'});
-        display.style({'opacity': 0});
+        };
 
         this.reset();
     }

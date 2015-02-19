@@ -4,6 +4,10 @@ com_geekAndPoke_Ngm1.util = (function () {
         return typeof(o) !== 'undefined';
     }
 
+    function isSet(o) {
+        return (isDefined(o) && o != null);
+    }
+
     function isNumeric(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
@@ -33,6 +37,7 @@ com_geekAndPoke_Ngm1.util = (function () {
         clearSvg: clearSvg,
         isDefined: isDefined,
         isNumeric: isNumeric,
+        isSet: isSet,
         pushAll: pushAll
     };
 })();

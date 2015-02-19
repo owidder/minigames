@@ -4,7 +4,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
     var gameBController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
-        var MAX_NUMBER = 100;
+        var START_MAX_NUMBER = 10;
         var GROUP_SIZE = 5;
         var MAX_NUMBER_OF_BUBBLES = 20;
         var MIN_NUMBER_OF_BUBBLES = 8;
@@ -21,6 +21,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var numbers = [];
         var totalBubbleCounter = 0;
         var timer;
+        var currentMaxNumber = START_MAX_NUMBER;
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
 
@@ -117,7 +118,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function newNumber() {
-            var number = Math.floor(Math.random() * MAX_NUMBER);
+            var number = Math.floor(Math.random() * currentMaxNumber);
             numbers.push(number);
             numbers.sort(function sortNumber(a, b) {return a - b;});
 
@@ -168,6 +169,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             util.pushAll(bubblesData.nodes, nodes);
             start();
             force.start();
+
+            currentMaxNumber++;
         }
 
         function startGame() {
