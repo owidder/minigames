@@ -55,14 +55,14 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
         this.reset();
     }
 
-    function GeneralDisplay(aScope, aCssSelect, aScopeProperty) {
+    function GeneralDisplay(aScope, aCssSelector, aScopeProperty) {
         var DISPLAY_FADE_IN_TIME = 200;
         var DISPLAY_FADE_OUT_TIME = 500;
         var DISPLAY_OPACITY = 0.2;
 
         var display;
         var scope = aScope;
-        var cssSelect = aCssSelect;
+        var cssSelector = aCssSelector;
         var scopeProperty = aScopeProperty;
 
         this.show = function(value) {
@@ -78,7 +78,7 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
 
         };
 
-        display = d3.select(cssSelect);
+        display = d3.select(cssSelector);
         display.style({'font-size': height/3+'px'});
         display.style({'opacity': 0});
     }
@@ -106,7 +106,8 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
 
     return {
         HealthCounter: HealthCounter,
-        PointDisplay: PointDisplay
+        PointDisplay: PointDisplay,
+        GeneralDisplay: GeneralDisplay
     }
 
 })();

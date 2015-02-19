@@ -13,7 +13,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         var BUBBLE_FADE_OUT_TIME = 300;
 
-        var svg, width, height, middleX;
+        var svg, width, height;
         var radius;
         var bubbles;
         var bubblesData;
@@ -24,6 +24,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var currentMaxNumber = START_MAX_NUMBER;
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
+        var newBubblesWarningDisplay = new fieldComponents.GeneralDisplay($scope, ".new-bubbles-warning");
 
         function gameOver() {
             clearTimeout(timer);
@@ -154,6 +155,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         function createNewBubbles() {
             var nodes = [], i;
 
+            newBubblesWarningDisplay.show();
+
             if(numbers.length > MAX_NUMBER_OF_BUBBLES) {
                 gameOver();
             }
@@ -208,7 +211,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         height = $(window).height();
         width = $(window).width();
-        middleX = width / 2;
         radius = Math.min(width, height) / 10;
 
 
