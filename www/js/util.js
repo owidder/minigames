@@ -12,6 +12,10 @@ com_geekAndPoke_Ngm1.util = (function () {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
+    function randomNumberBetweenLowerAndUpper(lower, upper) {
+        return Math.floor(Math.random() * (upper - lower)) + lower;
+    }
+
     /**
      * Push array s into array d
      * @param d
@@ -32,12 +36,12 @@ com_geekAndPoke_Ngm1.util = (function () {
         }
     }
 
-
     return {
         clearSvg: clearSvg,
         isDefined: isDefined,
         isNumeric: isNumeric,
         isSet: isSet,
+        randomNumberBetweenLowerAndUpper: randomNumberBetweenLowerAndUpper,
         pushAll: pushAll
     };
 })();

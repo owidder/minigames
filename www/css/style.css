@@ -27,7 +27,7 @@ body {
 }
 
 .bubble-3 > circle {
-    fill: yellow;
+    fill: black;
 }
 
 .bubble-4 > circle {
@@ -51,7 +51,7 @@ body {
 }
 
 .bubble-9 > circle {
-    fill: black;
+    fill: yellow;
 }
 
 .bubble > text {
