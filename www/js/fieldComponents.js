@@ -65,6 +65,9 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
         var cssSelector = aCssSelector;
         var scopeProperty = aScopeProperty;
 
+        this.displayFadeInTime = DISPLAY_FADE_IN_TIME;
+        this.displayFadeOutTime = DISPLAY_FADE_OUT_TIME;
+
         this.show = function(value) {
             if(util.isSet(value)) {
                 scope[scopeProperty] = value;
@@ -73,8 +76,8 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
 
             display
                 .attr('opacity', 0.0)
-                .transition().duration(DISPLAY_FADE_IN_TIME).style({'opacity': DISPLAY_OPACITY})
-                .transition().duration(DISPLAY_FADE_OUT_TIME).style({'opacity': 0.0});
+                .transition().duration(this.displayFadeInTime).style({'opacity': DISPLAY_OPACITY})
+                .transition().duration(this.displayFadeOutTime).style({'opacity': 0.0});
 
         };
 

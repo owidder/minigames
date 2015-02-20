@@ -7,12 +7,12 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var START_MAX_NUMBER = 20;
         var GROUP_SIZE = 5;
         var MAX_NUMBER_OF_BUBBLES = 30;
-        var MIN_NUMBER_OF_BUBBLES = 8;
-        var START_MIN_BUBBLE_CREATION_INTERVAL = 3000;
+        var MIN_NUMBER_OF_BUBBLES = 15;
+        var START_MIN_BUBBLE_CREATION_INTERVAL = 2000;
         var END_MIN_BUBBLE_CREATION_INTERVAL = 1000;
-        var START_MAX_BUBBLE_CREATION_INTERVAL = 6000;
-        var END_MAX_BUBBLE_CREATION_INTERVAL = 1000;
-        var CREATION_INTERVAL_DECREASE = 100;
+        var START_MAX_BUBBLE_CREATION_INTERVAL = 4000;
+        var END_MAX_BUBBLE_CREATION_INTERVAL = 2000;
+        var CREATION_INTERVAL_DECREASE = 500;
         var MIN_NUMBER_OF_EXTRA_BUBBLES = 5;
         var MAX_NUMBER_OF_EXTRA_BUBBLES = 7;
         var BUBBLE_THRESHOLD = 20;
@@ -35,6 +35,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
         var newBubblesWarningDisplay = new fieldComponents.GeneralDisplay($scope, ".new-bubbles-warning");
+        newBubblesWarningDisplay.displayFadeInTime = TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES;
 
         function gameOver() {
             clearTimeout(createNewBubblesTimer);
