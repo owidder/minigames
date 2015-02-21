@@ -3,7 +3,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
-    var gameAController = com_geekAndPoke_Ngm1.controllers.controller('GameAController', function ($scope, $route, $location) {
+    var gameAController = com_geekAndPoke_Ngm1.rootController.controller('GameAController', function ($scope, $route, $location) {
         var GROUP_INCREASE_INTERVAL = 10000;
         var MAX_NUMBER = 100;
         var NUMBER_OF_LIFES = 1;
@@ -94,7 +94,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function gameOver() {
-            $scope.$root.points = pointDisplay.getPoints();
+            $scope.$root.rootData.points = pointDisplay.getPoints();
             $location.path('/gameOver');
             $scope.$apply();
         }
@@ -166,7 +166,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             }, delay);
         }
 
-        $scope.result = 'none';
+        $scope.$root.rootData.currentGameId = constants._GAME_A_ID;
 
         height = $(window).height();
         width = $(window).width();

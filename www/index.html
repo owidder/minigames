@@ -14,16 +14,20 @@
     <link rel="stylesheet" href="css/style.css"/>
 
     <script src="js/app.js"></script>
-    <script src="js/const.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/const.js"></script>
+    <script src="js/data.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/fieldComponents.js"></script>
+    <script src="js/rootController.js"></script>
     <script src="js/gameAController.js"></script>
     <script src="js/gameBController.js"></script>
     <script src="js/gameOverController.js"></script>
     <script src="js/gameStartController.js"></script>
 </head>
 <body>
-<div ng-view ng-animate="{enter: 'enter', leave: 'leave'}"></div>
+<div ng-controller="RootController">
+    <div ng-view ng-animate="{enter: 'enter', leave: 'leave'}"></div>
+</div>
 </body>
 </html>

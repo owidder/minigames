@@ -1,8 +1,9 @@
 com_geekAndPoke_Ngm1.gameOverController = (function() {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;
+    var data = com_geekAndPoke_Ngm1.data;
 
-    var gameOverController = com_geekAndPoke_Ngm1.controllers.controller('GameOverController', function ($scope) {
+    var gameOverController = com_geekAndPoke_Ngm1.rootController.controller('GameOverController', function ($scope) {
         var INSERT_TEXT_HERE_CLASS = 'insert-text-here';
         var NON_HREF_CLASS = 'non-href';
         var WITH_HREF_CLASS = 'with-href';
@@ -22,7 +23,11 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             .attr("width", width)
             .attr("height", height);
 
-        var points = $scope.$root.points;
+        var points = $scope.$root.rootData.points;
+        var currentGameId = $scope.$root.rootData.currentGameId;
+        if(util.isSet(currentGameId) && currentGameId.length > 0 && util.isSet(points)) {
+            data.setHighScore(currentGameId, points, $scope.$root.rootData);
+        }
 
         if(!util.isDefined(points)) points = '0';
 

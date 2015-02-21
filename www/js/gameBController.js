@@ -3,7 +3,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
-    var gameBController = com_geekAndPoke_Ngm1.controllers.controller('GameBController', function ($scope, $route, $location) {
+    var gameBController = com_geekAndPoke_Ngm1.rootController.controller('GameBController', function ($scope, $route, $location) {
         var START_MAX_NUMBER = 20;
         var GROUP_SIZE = 5;
         var MAX_NUMBER_OF_BUBBLES = 30;
@@ -40,7 +40,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         function gameOver() {
             clearTimeout(createNewBubblesTimer);
             clearTimeout(warnAboutNewBubblesTimer);
-            $scope.$root.points = pointDisplay.getPoints();
+            $scope.$root.rootData.points = pointDisplay.getPoints();
             $location.path('/gameOver');
             $scope.$apply();
         }
@@ -246,7 +246,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             createNewBubbles();
         }
 
-        $scope.result = 'none';
+        $scope.$root.rootData.currentGameId = constants._GAME_B_ID;
 
         height = $(window).height();
         width = $(window).width();

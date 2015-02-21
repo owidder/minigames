@@ -16,6 +16,10 @@ com_geekAndPoke_Ngm1.util = (function () {
         return Math.floor(Math.random() * (upper - lower)) + lower;
     }
 
+    function startsWith(string, text) {
+        return (string.indexOf(text) == 0);
+    }
+
     /**
      * Push array s into array d
      * @param d
@@ -42,6 +46,7 @@ com_geekAndPoke_Ngm1.util = (function () {
         isNumeric: isNumeric,
         isSet: isSet,
         randomNumberBetweenLowerAndUpper: randomNumberBetweenLowerAndUpper,
+        startsWith: startsWith,
         pushAll: pushAll
     };
 })();
