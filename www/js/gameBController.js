@@ -213,7 +213,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             start();
             force.start();
 
-            currentMinNumberOfBubble++;
+            if(currentMinNumberOfBubble < END_MIN_NUMBER_OF_BUBBLES) {
+                currentMinNumberOfBubble++;
+            }
 
             startCreateNewBubbleTimer();
         }
