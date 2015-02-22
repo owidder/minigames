@@ -3,7 +3,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
-    var gameBController = com_geekAndPoke_Ngm1.rootController.controller('GameBController', function ($scope, $route, $location) {
+    var gameCController = com_geekAndPoke_Ngm1.rootController.controller('GameCController', function ($scope, $route, $location) {
         var MAX_NUMBER = 20;
         var GROUP_SIZE = 5;
         var MAX_NUMBER_OF_BUBBLES = 30;
@@ -214,8 +214,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             force.start();
 
             currentMinNumberOfBubble++;
-
-            startCreateNewBubbleTimer();
         }
 
         function startGame() {
@@ -229,7 +227,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             };
 
             force = d3.layout.force()
-                .charge(-500)
+                .charge(-200)
+                .gravity(1)
                 .linkDistance(3*radius)
                 .size([width, height]);
 
@@ -257,5 +256,5 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         startGame();
     });
 
-    return gameBController;
+    return gameCController;
 })();

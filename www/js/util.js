@@ -33,6 +33,26 @@ com_geekAndPoke_Ngm1.util = (function () {
         }
     }
 
+    function createLinkArray(size) {
+        var i, j, link;
+        var linkArray = [];
+
+        if (size > 0) {
+            for (i = 0; i < size; i++) {
+                for (j = i + 1; j < size; j++) {
+                    link = {
+                        source: i,
+                        target: j,
+                        value: 1
+                    };
+                    linkArray.push(link);
+                }
+            }
+        }
+
+        return linkArray;
+    }
+
     function clearSvg() {
         var svg = d3.select("svg");
         if(!svg.empty()) {
@@ -47,6 +67,7 @@ com_geekAndPoke_Ngm1.util = (function () {
         isSet: isSet,
         randomNumberBetweenLowerAndUpper: randomNumberBetweenLowerAndUpper,
         startsWith: startsWith,
-        pushAll: pushAll
+        pushAll: pushAll,
+        createLinkArray: createLinkArray
     };
 })();

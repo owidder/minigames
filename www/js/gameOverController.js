@@ -32,18 +32,14 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         if(!util.isDefined(points)) points = '0';
 
         var bubbles = {
-            nodes: [{name:'', group:0, clazz:NON_HREF_CLASS, color:'blue'},
+            nodes: [
+                {name:'', group:0, clazz:NON_HREF_CLASS, color:'blue'},
                 {name:points, group:4, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'green'},
                 {name: 'Swypi', group:2, clazz:WITH_HREF_CLASS, href:'#/gAStart', color:'red'},
-                {name: 'Touchi', group:3, clazz:WITH_HREF_CLASS, href:'#/gBStart', color:'orange'}],
-            links: [
-                {source:3, target:1, value:1},
-                {source:3, target:2, value:1},
-                {source:3, target:0, value:1},
-                {source:0, target:1, value:1},
-                {source:0, target:2, value:1},
-                {source:1, target:2, value:1}
-            ]
+                {name: 'Touchi', group:3, clazz:WITH_HREF_CLASS, href:'#/gBStart', color:'orange'},
+                {name: 'Gravi', group:5, clazz:WITH_HREF_CLASS, href:'#/gC', color:'black'}
+            ],
+            links: util.createLinkArray(5)
         };
 
         var radius = Math.min(width, height) / 5;
