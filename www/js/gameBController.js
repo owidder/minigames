@@ -4,10 +4,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
     var gameBController = com_geekAndPoke_Ngm1.rootController.controller('GameBController', function ($scope, $route, $location) {
-        var START_MAX_NUMBER = 20;
+        var MAX_NUMBER = 20;
         var GROUP_SIZE = 5;
         var MAX_NUMBER_OF_BUBBLES = 30;
-        var MIN_NUMBER_OF_BUBBLES = 15;
         var START_MIN_BUBBLE_CREATION_INTERVAL = 2000;
         var END_MIN_BUBBLE_CREATION_INTERVAL = 1000;
         var START_MAX_BUBBLE_CREATION_INTERVAL = 4000;
@@ -18,7 +17,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var BUBBLE_THRESHOLD = 20;
         var TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES = 1000;
 
-        var BUBBLE_FADE_OUT_TIME = 300;
+        var BUBBLE_FADE_OUT_TIME = 1000;
 
         var svg, width, height;
         var radius;
@@ -29,9 +28,12 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var totalBubbleCounter = 0;
         var warnAboutNewBubblesTimer;
         var createNewBubblesTimer;
-        var currentMaxNumber = START_MAX_NUMBER;
         var currentMinBubbleCreationInterval = START_MIN_BUBBLE_CREATION_INTERVAL;
         var currentMaxBubbleCreationInterval = START_MAX_BUBBLE_CREATION_INTERVAL;
+
+        var START_MIN_NUMBER_OF_BUBBLES = 5;
+        var END_MIN_NUMBER_OF_BUBBLES = 15;
+        var currentMinNumberOfBubble = START_MIN_NUMBER_OF_BUBBLES;
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
         var newBubblesWarningDisplay = new fieldComponents.GeneralDisplay($scope, ".new-bubbles-warning");
@@ -150,7 +152,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function newNumber() {
-            var number = Math.floor(Math.random() * currentMaxNumber);
+            var number = Math.floor(Math.random() * MAX_NUMBER);
             numbers.push(number);
             numbers.sort(function sortNumber(a, b) {return a - b;});
 
@@ -195,8 +197,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
                 gameOver();
             }
 
-            if(numbers.length < MIN_NUMBER_OF_BUBBLES) {
-                numberOfExtraBubbles = MIN_NUMBER_OF_BUBBLES - numbers.length;
+            if(numbers.length < currentMinNumberOfBubble) {
+                numberOfExtraBubbles = currentMinNumberOfBubble - numbers.length;
             }
             else if(numbers.length < BUBBLE_THRESHOLD) {
                 numberOfExtraBubbles = util.randomNumberBetweenLowerAndUpper(MIN_NUMBER_OF_EXTRA_BUBBLES, MAX_NUMBER_OF_EXTRA_BUBBLES);
@@ -211,7 +213,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             start();
             force.start();
 
-            // currentMaxNumber++;
+            currentMinNumberOfBubble++;
 
             startCreateNewBubbleTimer();
         }
