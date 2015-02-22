@@ -213,7 +213,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             start();
             force.start();
 
-            currentMinNumberOfBubble++;
+            if(currentMinNumberOfBubble < END_MIN_NUMBER_OF_BUBBLES) {
+                currentMinNumberOfBubble++;
+            }
 
             startCreateNewBubbleTimer();
         }
@@ -222,11 +224,6 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             var nodes = [], links = [];
             var i, j;
             var node;
-
-            //for(i = 0; i < START_NUMBER_OF_BUBBLES; i++) {
-            //    node = createNewBubbleNode();
-            //    nodes.push(node);
-            //}
 
             bubblesData = {
                 nodes: nodes,
