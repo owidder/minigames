@@ -8,6 +8,7 @@ com_geekAndPoke_Ngm1.const = function () {
         MAX_NUMBER_OF_GROUPS: 10,
         _GAME_A_ID: "A",
         _GAME_B_ID: "B",
+        _GAME_C_ID: "C",
         GAME_IDS: gameIds
     };
 

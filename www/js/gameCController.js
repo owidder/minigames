@@ -4,44 +4,31 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
     var gameCController = com_geekAndPoke_Ngm1.rootController.controller('GameCController', function ($scope, $route, $location) {
-        var MAX_NUMBER = 20;
-        var GROUP_SIZE = 5;
-        var MAX_NUMBER_OF_BUBBLES = 30;
-        var START_MIN_BUBBLE_CREATION_INTERVAL = 2000;
-        var END_MIN_BUBBLE_CREATION_INTERVAL = 1000;
-        var START_MAX_BUBBLE_CREATION_INTERVAL = 4000;
-        var END_MAX_BUBBLE_CREATION_INTERVAL = 2000;
-        var CREATION_INTERVAL_DECREASE = 500;
-        var MIN_NUMBER_OF_EXTRA_BUBBLES = 5;
-        var MAX_NUMBER_OF_EXTRA_BUBBLES = 7;
-        var BUBBLE_THRESHOLD = 20;
-        var TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES = 1000;
+        var UPPER_BOUND = 50;
+        var LOWER_BOUND = 40;
+        var currentSum = 0;
 
-        var BUBBLE_FADE_OUT_TIME = 1000;
+        var MAX_GROUP = 5;
+        var START_BUBBLE_CREATION_INTERVAL = 2000;
+
+        var cornerCounter = 0;
+        var CORNER_TOP_LEFT = 0;
+        var CORNER_TOP_RIGHT = 1;
+        var CORNER_BOTTOM_RIGHT = 2;
+        var CORNER_BOTTOM_LEFT = 3;
 
         var svg, width, height;
         var radius;
         var bubbles;
         var bubblesData;
         var force;
-        var numbers = [];
-        var totalBubbleCounter = 0;
-        var warnAboutNewBubblesTimer;
         var createNewBubblesTimer;
-        var currentMinBubbleCreationInterval = START_MIN_BUBBLE_CREATION_INTERVAL;
-        var currentMaxBubbleCreationInterval = START_MAX_BUBBLE_CREATION_INTERVAL;
-
-        var START_MIN_NUMBER_OF_BUBBLES = 5;
-        var END_MIN_NUMBER_OF_BUBBLES = 15;
-        var currentMinNumberOfBubble = START_MIN_NUMBER_OF_BUBBLES;
+        var currentBubbleCreationInterval = START_BUBBLE_CREATION_INTERVAL;
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
-        var newBubblesWarningDisplay = new fieldComponents.GeneralDisplay($scope, ".new-bubbles-warning");
-        newBubblesWarningDisplay.displayFadeInTime = TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES;
 
         function gameOver() {
             clearTimeout(createNewBubblesTimer);
-            clearTimeout(warnAboutNewBubblesTimer);
             $scope.$root.rootData.points = pointDisplay.getPoints();
             $location.path('/gameOver');
             $scope.$apply();
@@ -61,69 +48,59 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             });
         }
 
-        function removeNodeFromArry(nodeToRemove) {
-            var i, currentNode;
-            for(i = 0; i < bubblesData.nodes.length; i++) {
-                currentNode = bubblesData.nodes[i];
-                if(currentNode.id == nodeToRemove.id) {
+        function nextStartPosition() {
+            var position = {
+
+            };
+            switch (cornerCounter) {
+                case CORNER_TOP_LEFT:
+                    position.x = 0;
+                    position.y = 0;
                     break;
-                }
+
+                case CORNER_TOP_RIGHT:
+                    position.x = width;
+                    position.y = 0;
+                    break;
+
+                case CORNER_BOTTOM_RIGHT:
+                    position.x = width;
+                    position.y = height;
+                    break;
+
+                case CORNER_BOTTOM_LEFT:
+                    position.x = 0;
+                    position.y = height;
+                    break;
             }
 
-            if(i < bubblesData.nodes.length) {
-                bubblesData.nodes.splice(i, 1);
+            cornerCounter++;
+            if(cornerCounter > 3) {
+                cornerCounter = 0;
             }
-        }
 
-        function removeBubblefromField(node) {
-            var bubble = d3.select(".id-" + node.id);
-            if(bubble != null) {
-                bubble
-                    .attr('opacity', 1)
-                    .transition().duration(BUBBLE_FADE_OUT_TIME).attr('opacity', 0);
-            }
+            return position;
         }
 
         function clickedOnNode(node) {
-            if(isBiggestNumber(node.name)) {
-                removeBiggestNumber();
-                pointDisplay.increase();
-                removeNodeFromArry(node);
-                removeBubblefromField(node);
-                start();
-            }
-            else {
+            if(currentSum < LOWER_BOUND) {
                 gameOver();
             }
-        }
-
-        function showWarnSign() {
-            clearInterval(createNewBubblesTimer);
-            newBubblesWarningDisplay.show();
-            warnAboutNewBubblesTimer = setTimeout(createNewBubbles, TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES);
-        }
-
-        function startCreateNewBubbleTimer() {
-            var interval = util.randomNumberBetweenLowerAndUpper(currentMinBubbleCreationInterval, currentMaxBubbleCreationInterval);
-            createNewBubblesTimer = setInterval(showWarnSign, interval);
-
-            if(currentMinBubbleCreationInterval > END_MIN_BUBBLE_CREATION_INTERVAL) {
-                currentMinBubbleCreationInterval -= CREATION_INTERVAL_DECREASE;
-            }
-
-            if(currentMaxBubbleCreationInterval > END_MAX_BUBBLE_CREATION_INTERVAL) {
-                currentMaxBubbleCreationInterval -= CREATION_INTERVAL_DECREASE;
+            else {
+                bubblesData.nodes.length = 0;
+                currentSum = 0;
+                start();
             }
         }
 
         function start() {
             var g;
 
-            bubbles = bubbles.data(force.nodes(), function(d) {return d.id;});
+            bubbles = bubbles.data(force.nodes());
 
             g = bubbles.enter()
                 .append("g")
-                .attr("class", function(d) {return "bubble bubble-" + d.group + " id-" + d.id})
+                .attr("class", function(d) {return "bubble bubble-" + d.group})
                 .attr("transform", function(d) { return "translate(" + cx(d.x) + "," + cy(d.y) + ")"; })
                 .call(force.drag);
 
@@ -152,68 +129,56 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function newNumber() {
-            var number = Math.floor(Math.random() * MAX_NUMBER);
-            numbers.push(number);
-            numbers.sort(function sortNumber(a, b) {return a - b;});
+            if(currentSum >= UPPER_BOUND) {
+                gameOver();
+            }
+
+            var number = Math.max(Math.floor(Math.random() * (UPPER_BOUND - currentSum)), 1);
+            currentSum += number;
+
+            if(currentSum >= UPPER_BOUND) {
+                gameOver();
+                return -1;
+            }
 
             return number;
-        }
-
-        function isBiggestNumber(number) {
-            return (number == numbers[numbers.length-1]);
-        }
-
-        function removeBiggestNumber() {
-            numbers.splice(numbers.length-1, 1);
         }
 
         function createNewBubbleNode() {
             var bubbleValue, group;
             var node;
+            var position = nextStartPosition();
 
-            totalBubbleCounter++;
             bubbleValue = newNumber();
-            group = Math.floor(numbers.length / GROUP_SIZE);
-            node = {
-                name: bubbleValue,
-                group: group,
-                x: Math.floor(Math.random() * width),
-                y: Math.floor(Math.random() * height),
-                id: totalBubbleCounter
-            };
+            if(bubbleValue >= 0) {
+                group = Math.floor(Math.random() * MAX_GROUP);
+                node = {
+                    name: bubbleValue,
+                    group: group,
+                    x: position.x,
+                    y: position.y
+                };
 
-            return node;
+                return node;
+            }
+            else {
+                return null;
+            }
         }
 
-        function createNewBubbles() {
-            var nodes = [], i;
-            var numberOfExtraBubbles = 0;
+        function createNewBubble() {
+            clearTimeout(createNewBubblesTimer);
 
-            clearInterval(warnAboutNewBubblesTimer);
+            var node = createNewBubbleNode();
 
-            nodes.push(createNewBubbleNode());
+            if(node != null) {
+                force.stop();
+                bubblesData.nodes.push(node);
+                start();
+                force.start();
 
-            if(numbers.length > MAX_NUMBER_OF_BUBBLES) {
-                gameOver();
+                createNewBubblesTimer = setTimeout(createNewBubble, currentBubbleCreationInterval);
             }
-
-            if(numbers.length < currentMinNumberOfBubble) {
-                numberOfExtraBubbles = currentMinNumberOfBubble - numbers.length;
-            }
-            else if(numbers.length < BUBBLE_THRESHOLD) {
-                numberOfExtraBubbles = util.randomNumberBetweenLowerAndUpper(MIN_NUMBER_OF_EXTRA_BUBBLES, MAX_NUMBER_OF_EXTRA_BUBBLES);
-            }
-
-            for(i = 0; i < numberOfExtraBubbles; i++) {
-                nodes.push(createNewBubbleNode());
-            }
-
-            force.stop();
-            util.pushAll(bubblesData.nodes, nodes);
-            start();
-            force.start();
-
-            currentMinNumberOfBubble++;
         }
 
         function startGame() {
@@ -227,8 +192,8 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             };
 
             force = d3.layout.force()
-                .charge(-200)
-                .gravity(1)
+                .charge(-150)
+                .gravity(.15)
                 .linkDistance(3*radius)
                 .size([width, height]);
 
@@ -239,7 +204,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
             bubbles = svg.selectAll(".bubble");
 
-            createNewBubbles();
+            createNewBubble();
         }
 
         $scope.$root.rootData.currentGameId = constants._GAME_B_ID;
