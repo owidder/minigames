@@ -232,7 +232,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
 
         height = $(window).height();
         width = $(window).width();
-        radius = Math.min(width, height) / 10;
+        radius = Math.min(width, height) / 5;
 
 
         svg = d3.select("#field").append("svg")
