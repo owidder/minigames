@@ -4,8 +4,9 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
     var gameCController = com_geekAndPoke_Ngm1.rootController.controller('GameCController', function ($scope, $route, $location) {
+        var MAX_NUMBER = 20;
         var UPPER_BOUND = 50;
-        var LOWER_BOUND = 40;
+        var LOWER_BOUND = 45;
         var currentSum = 0;
 
         var MAX_GROUP = 5;
@@ -22,8 +23,11 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var bubbles;
         var bubblesData;
         var force;
-        var createNewBubblesTimer;
+
         var currentBubbleCreationInterval = START_BUBBLE_CREATION_INTERVAL;
+        var BUBBLE_CREATION_INTERVAL_DECREASE = 100;
+        var MIN_BUBBLE_CREATION_INTERVAL = 500;
+        var createNewBubblesTimer;
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
 
@@ -82,11 +86,19 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             return position;
         }
 
+        function decreaseBubbleCreationInterval() {
+            if(currentBubbleCreationInterval >= MIN_BUBBLE_CREATION_INTERVAL + BUBBLE_CREATION_INTERVAL_DECREASE) {
+                currentBubbleCreationInterval -= BUBBLE_CREATION_INTERVAL_DECREASE;
+            }
+        }
+
         function clickedOnNode(node) {
-            if(currentSum < LOWER_BOUND) {
+            if(currentSum <= LOWER_BOUND) {
                 gameOver();
             }
             else {
+                pointDisplay.increase();
+                decreaseBubbleCreationInterval();
                 bubblesData.nodes.length = 0;
                 currentSum = 0;
                 start();
@@ -129,11 +141,20 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function newNumber() {
+            var number, diffToUpperBound;
+
             if(currentSum >= UPPER_BOUND) {
                 gameOver();
             }
 
-            var number = Math.max(Math.floor(Math.random() * (UPPER_BOUND - currentSum)), 1);
+            diffToUpperBound = UPPER_BOUND - currentSum;
+
+            if(diffToUpperBound > MAX_NUMBER || currentSum > LOWER_BOUND) {
+                number = Math.max(Math.floor(Math.random() * MAX_NUMBER), 1);
+            }
+            else {
+                number = Math.max(Math.floor(Math.random() * (UPPER_BOUND - currentSum)), 1);
+            }
             currentSum += number;
 
             if(currentSum >= UPPER_BOUND) {
@@ -207,7 +228,7 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
             createNewBubble();
         }
 
-        $scope.$root.rootData.currentGameId = constants._GAME_B_ID;
+        $scope.$root.rootData.currentGameId = constants._GAME_C_ID;
 
         height = $(window).height();
         width = $(window).width();

@@ -37,7 +37,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
                 {name:points, group:4, clazz:INSERT_TEXT_HERE_CLASS + ' ' + NON_HREF_CLASS, color:'green'},
                 {name: 'Swypi', group:2, clazz:WITH_HREF_CLASS, href:'#/gAStart', color:'red'},
                 {name: 'Touchi', group:3, clazz:WITH_HREF_CLASS, href:'#/gBStart', color:'orange'},
-                {name: 'Gravi', group:5, clazz:WITH_HREF_CLASS, href:'#/gC', color:'black'}
+                {name: 'Sums', group:5, clazz:WITH_HREF_CLASS, href:'#/gCStart', color:'black'}
             ],
             links: util.createLinkArray(5)
         };
