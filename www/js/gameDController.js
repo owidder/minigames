@@ -2,37 +2,76 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;
     var data = com_geekAndPoke_Ngm1.data;
+    var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
     var gameDController = com_geekAndPoke_Ngm1.rootController.controller('GameDController', function ($scope) {
         var bubbles, bubbles_g_enter, bubbles_g_circle_enter, bubbles_g_text_enter;
         var lines;
         var middleX, middleY;
+        var oldAngle;
+        var currentSector;
 
-        function angle(x, y) {
+        var CLASS_GAUGE_TEXT = "gauge-text";
+        var CLASS_ANGLE_TEXT = "angle-text";
+        var CLASS_NO_TEXT = "no-text";
+        var CLASS_SECTOR_TEXT = "sector-text";
+
+        var pointDisplay = new fieldComponents.PointDisplay($scope);
+
+        function gameOver() {
+            $scope.$root.rootData.points = pointDisplay.getPoints();
+            $location.path('/gameOver');
+            $scope.$apply();
+        }
+
+        function fillAngleAndSector(d) {
+            var x = d.x;
+            var y = d.y;
             var diffX = Math.abs(x - middleX);
             var diffY = Math.abs(y - middleY);
             var tanAlpha = diffY / diffX;
             var alpha = Math.atan(tanAlpha);
 
             if(x < middleX && y < middleY) {
-                alpha += (Math.PI * 3 / 2);
+                alpha += Math.PI;
+                d.sector = 0;
+            }
+            else if(x < middleX && y > middleY) {
+                alpha = Math.PI - alpha;
+                d.sector = 1;
+            }
+            else if(x > middleX && y < middleY) {
+                alpha = 2*Math.PI - alpha;
+                d.sector = 2;
+            }
+            else {
+                d.sector = 3;
             }
 
-            return Math.round(alpha * 1000) / 1000;
+            d.angle = Math.round(alpha * 1000) / 1000;;
+        }
+
+        function calculatePoint() {
+            if(oldAngle > (Math.PI * 3/2) && angle < (Math.PI * 1/2)) {
+                pointDisplay.increase();
+            }
         }
 
         function tick() {
             bubbles.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
-            bubbles.selectAll("text")
+            bubbles.selectAll("." + CLASS_ANGLE_TEXT)
                 .transition()
                 .text(function(d) {
-                    return angle(d.x, d.y);
+                    fillAngleAndSector(d);
+                    return d.angle;
                 });
             lines.attr("d", function(d) {
                     return "M" + middleX + "," + middleY + "L" + d.x + "," + d.y;
                 });
+
+            calculatePoint();
         }
 
         var height = $(window).height();
@@ -54,11 +93,11 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
 
         var bubbleData = {
             nodes: [
-                {name:'', group:0, color:'blue'},
-                {name:'', group:4, color:'green'},
-                {name:'', group:2, color:'red'},
-                {name:'', group:3, color:'orange'},
-                {name:'', group:5, color:'black'}
+                {name:'', group:0, color:'blue', clazz: CLASS_GAUGE_TEXT},
+                {name:'', group:4, color:'green', clazz: CLASS_ANGLE_TEXT},
+                {name:'', group:2, color:'red', clazz: CLASS_SECTOR_TEXT},
+                {name:'', group:3, color:'orange', clazz: CLASS_NO_TEXT},
+                {name:'', group:5, color:'black', clazz: CLASS_NO_TEXT}
             ],
             links: util.createLinkArray(5)
         };
@@ -90,6 +129,9 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
 
         bubbles_g_text_enter = bubbles_g_enter
             .append("text")
+            .attr("class", function(d) {
+                return d.clazz;
+            })
             .text('')
             .style("font-size", function(d) { return Math.min(0.2*radius, (0.2*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
             .style("fill", "white")
