@@ -8,13 +8,14 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         var bubbles, bubbles_g_enter, bubbles_g_circle_enter, bubbles_g_text_enter;
         var lines;
         var middleX, middleY;
-        var oldAngle;
         var currentSector;
 
         var CLASS_GAUGE_TEXT = "gauge-text";
         var CLASS_ANGLE_TEXT = "angle-text";
         var CLASS_NO_TEXT = "no-text";
         var CLASS_SECTOR_TEXT = "sector-text";
+        var CLASS_RANDOM_NUMBER_TEXT = "random-number-text";
+        var CLASS_IS_MOVING_TEXT = "is-moving-text";
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
 
@@ -34,7 +35,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
 
             if(x < middleX && y < middleY) {
                 alpha += Math.PI;
-                d.sector = 0;
+                d.sector = 2;
             }
             else if(x < middleX && y > middleY) {
                 alpha = Math.PI - alpha;
@@ -42,13 +43,13 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             }
             else if(x > middleX && y < middleY) {
                 alpha = 2*Math.PI - alpha;
-                d.sector = 2;
-            }
-            else {
                 d.sector = 3;
             }
+            else {
+                d.sector = 0;
+            }
 
-            d.angle = Math.round(alpha * 1000) / 1000;;
+            d.angle = Math.round(alpha * 1000) / 1000;
         }
 
         function calculatePoint() {
@@ -57,21 +58,37 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             }
         }
 
+        function calculateIsMoving(node) {
+            if(util.isSet(node.oldX) && util.isSet(node.oldY)) {
+
+            }
+        }
+
         function tick() {
             bubbles.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
-            bubbles.selectAll("." + CLASS_ANGLE_TEXT)
+            bubbles.selectAll("." + CLASS_RANDOM_NUMBER_TEXT)
                 .transition()
                 .text(function(d) {
-                    fillAngleAndSector(d);
-                    return d.angle;
+                    return d.rnd;
+                });
+            bubbles.selectAll("." + CLASS_RANDOM_NUMBER_TEXT)
+                .transition()
+                .text(function(d) {
+                    return d.rnd;
                 });
             lines.attr("d", function(d) {
                     return "M" + middleX + "," + middleY + "L" + d.x + "," + d.y;
                 });
 
-            calculatePoint();
+            //calculatePoint();
+        }
+
+        function insertRandomNumbersIntoNodes(nodes) {
+            nodes.forEach(function(node) {
+                node.rnd = util.randomNumberBetweenLowerAndUpper(1, 100);
+            });
         }
 
         var height = $(window).height();
@@ -93,19 +110,20 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
 
         var bubbleData = {
             nodes: [
-                {name:'', group:0, color:'blue', clazz: CLASS_GAUGE_TEXT},
-                {name:'', group:4, color:'green', clazz: CLASS_ANGLE_TEXT},
-                {name:'', group:2, color:'red', clazz: CLASS_SECTOR_TEXT},
-                {name:'', group:3, color:'orange', clazz: CLASS_NO_TEXT},
-                {name:'', group:5, color:'black', clazz: CLASS_NO_TEXT}
+                {name:'', group:0, color:'blue', clazz: CLASS_RANDOM_NUMBER_TEXT},
+                {name:'', group:4, color:'green', clazz: CLASS_IS_MOVING_TEXT},
+                {name:'', group:2, color:'red', clazz: CLASS_RANDOM_NUMBER_TEXT},
+                {name:'', group:3, color:'orange', clazz: CLASS_RANDOM_NUMBER_TEXT},
+                {name:'', group:5, color:'black', clazz: CLASS_RANDOM_NUMBER_TEXT}
             ],
             links: util.createLinkArray(5)
         };
+        insertRandomNumbersIntoNodes(bubbleData.nodes);
 
         var radius = Math.min(width, height) / 15;
 
         var force = d3.layout.force()
-            .charge(-150)
+            .charge(-1500)
             .linkDistance(3*radius)
             .size([width, height]);
 
