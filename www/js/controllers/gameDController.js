@@ -26,31 +26,15 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             $scope.$apply();
         }
 
-        function fillAngleAndSector(d) {
-            var x = d.x;
-            var y = d.y;
+        function fillAngle(node) {
+            var x = node.x;
+            var y = node.y;
             var diffX = Math.abs(x - middleX);
             var diffY = Math.abs(y - middleY);
             var tanAlpha = diffY / diffX;
             var alpha = Math.atan(tanAlpha);
 
-            if(x < middleX && y < middleY) {
-                alpha += Math.PI;
-                d.sector = 2;
-            }
-            else if(x < middleX && y > middleY) {
-                alpha = Math.PI - alpha;
-                d.sector = 1;
-            }
-            else if(x > middleX && y < middleY) {
-                alpha = 2*Math.PI - alpha;
-                d.sector = 3;
-            }
-            else {
-                d.sector = 0;
-            }
-
-            d.angle = Math.round(alpha * 1000) / 1000;
+            node.angle = Math.round(alpha * 1000) / 1000;
         }
 
         function calculatePoint() {
@@ -70,7 +54,24 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             return isNearTo;
         }
 
-        function insertMoveFlags(nodes) {
+        function checkOrder(nodes) {
+            var lastAngle = -1;
+            var lastRnd;
+            var ctr = 0;
+            nodes.forEach(function(node) {
+                fillAngle(node);
+                if(node.angle >= lastAngle && node.rnd > lastRnd) {
+                    ctr++;
+                }
+                lastAngle = node.angle;
+                lastRnd = node.rnd;
+            });
+
+            $scope.angleCtr = ctr;
+            $scope.$apply();
+        }
+
+        function computeMovingCtr(nodes) {
             var isMovingCtr = 0;
             nodes.forEach(function(node) {
                 var isMoving;
@@ -143,7 +144,8 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         };
         insertRandomNumbersIntoNodes(bubbleData.nodes);
         setInterval(function() {
-            insertMoveFlags(bubbleData.nodes);
+            computeMovingCtr(bubbleData.nodes);
+            checkOrder(bubbleData.nodes);
         }, 50);
 
         var radius = Math.min(width, height) / 15;
