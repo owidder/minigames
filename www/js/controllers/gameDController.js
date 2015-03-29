@@ -1,6 +1,7 @@
 com_geekAndPoke_Ngm1.gameOverController = (function() {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;
+    var mathutil = com_geekAndPoke_Ngm1.mathutil;
     var data = com_geekAndPoke_Ngm1.data;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
@@ -58,21 +59,43 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             }
         }
 
-        function calculateIsMoving(node) {
-            if(util.isSet(node.oldX) && util.isSet(node.oldY)) {
-
+        function isNearTo(point1, point2) {
+            var isNearTo = false;
+            var xDiff = Math.round(point1.x) - Math.round(point2.x);
+            var yDiff = Math.round(point1.y) - Math.round(point2.y);
+            if(Math.abs(xDiff) < 3 && Math.abs(yDiff) < 3) {
+                isNearTo = true;
             }
+
+            return isNearTo;
+        }
+
+        function insertMoveFlags(nodes) {
+            var isMovingCtr = 0;
+            nodes.forEach(function(node) {
+                var isMoving;
+                if(!util.isSet(node.oldPoint)) {
+                    node.oldPoint = {
+                        x: node.x,
+                        y: node.y
+                    }
+                }
+                else {
+                    if(!isNearTo(node, node.oldPoint)) {
+                        isMovingCtr++;
+                    }
+                }
+                node.oldPoint.x = node.x;
+                node.oldPoint.y = node.y;
+            });
+            $scope.moveDisplay = isMovingCtr;
+            $scope.$apply();
         }
 
         function tick() {
             bubbles.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
-            bubbles.selectAll("." + CLASS_RANDOM_NUMBER_TEXT)
-                .transition()
-                .text(function(d) {
-                    return d.rnd;
-                });
             bubbles.selectAll("." + CLASS_RANDOM_NUMBER_TEXT)
                 .transition()
                 .text(function(d) {
@@ -111,7 +134,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         var bubbleData = {
             nodes: [
                 {name:'', group:0, color:'blue', clazz: CLASS_RANDOM_NUMBER_TEXT},
-                {name:'', group:4, color:'green', clazz: CLASS_IS_MOVING_TEXT},
+                {name:'', group:4, color:'green', clazz: CLASS_RANDOM_NUMBER_TEXT},
                 {name:'', group:2, color:'red', clazz: CLASS_RANDOM_NUMBER_TEXT},
                 {name:'', group:3, color:'orange', clazz: CLASS_RANDOM_NUMBER_TEXT},
                 {name:'', group:5, color:'black', clazz: CLASS_RANDOM_NUMBER_TEXT}
@@ -119,6 +142,9 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             links: util.createLinkArray(5)
         };
         insertRandomNumbersIntoNodes(bubbleData.nodes);
+        setInterval(function() {
+            insertMoveFlags(bubbleData.nodes);
+        }, 50);
 
         var radius = Math.min(width, height) / 15;
 
