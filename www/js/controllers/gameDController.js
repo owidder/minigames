@@ -207,7 +207,7 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
             checkOrder(bubbleData.nodes);
         }, 50);
 
-        var radius = Math.min(width, height) / 15;
+        var radius = Math.min(width, height) / 5;
 
         var force = d3.layout.force()
             .charge(-1500)
