@@ -64,7 +64,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             return isNearTo;
         }
 
-        function getIndicesOfMaxAndMinAngle(nodes) {
+        function getIndicesOfMaxAndMin(nodes) {
             var maxAngle = -1;
             var minAngle = 10;
             var maxAngleIndex;
@@ -75,7 +75,8 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
                 if(node.angle > maxAngle) {
                     maxAngle = node.angle;
                     maxAngleIndex = index;
-                } else if(node.angle < minAngle) {
+                }
+                if(node.angle < minAngle) {
                     minAngle = node.angle;
                     minAngleIndex = index;
                 }
@@ -95,24 +96,27 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
             var lastRnd = -1;
             var ctr = 0;
             var i = 0;
+            var maxRnd = -1;
 
             $scope.bubbles = '';
             nodes.sort(function(a,b) {
-                return a.rnd - b.rnd;
+                return a.angle - b.angle;
             });
-            var maxAndMinAngle = getIndicesOfMaxAndMinAngle(nodes);
+            var maxAndMinAngle = getIndicesOfMaxAndMin(nodes);
 
             funcs.forEachWithIndex(nodes, function(node, index) {
-                fillAngle(node);
-                if(node.angle < lastAngle) {
-                    if(!(index == maxAndMinAngle.minAngleIndex && lastAngleIndex == maxAndMinAngle.maxAngleIndex)) {
+                if(node.rnd > maxRnd) {
+                    maxRnd = node.rnd;
+                }
+                $scope['bubbles' + ++i] = '[' + index + '] ' + node.rnd + ' : ' + node.angle;
+            });
+
+            funcs.forEachOrderedTuple(nodes, function(node1, node2, index) {
+                if(node2.rnd < node1.rnd) {
+                    if(node1.rnd != maxRnd) {
                         ctr++;
                     }
                 }
-                lastAngle = node.angle;
-                lastAngleIndex = index;
-
-                $scope['bubbles' + ++i] = node.rnd + ' : ' + node.angle;
             });
 
             $scope.angleCtr = ctr;
@@ -192,7 +196,7 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
         };
         insertRandomNumbersIntoNodes(bubbleData.nodes);
 
-        var maxAndMinAngle = getIndicesOfMaxAndMinAngle(bubbleData.nodes);
+        var maxAndMinAngle = getIndicesOfMaxAndMin(bubbleData.nodes);
 
         setInterval(function() {
             computeMovingCtr(bubbleData.nodes);

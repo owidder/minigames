@@ -25,6 +25,22 @@ com_geekAndPoke_Ngm1.funcs = (function() {
         }
     }
 
+    function forEachOrderedTuple(a, fkt, withLast) {
+        var i, elem1, elem2;
+        if(a.length > 1) {
+            for(i = 0; i < a.length - 1; i++) {
+                elem1 = a[i];
+                elem2 = a[i+1];
+                fkt(elem1, elem2, i);
+            }
+            if(withLast) {
+                elem1 = a[a.length - 1];
+                elem2 = a[0];
+                fkt(elem1, elem2, a.length - 1);
+            }
+        }
+    }
+
     function forEachKeyAndVal(v, fkt) {
         var i;
         for(i in v) {
@@ -60,6 +76,7 @@ com_geekAndPoke_Ngm1.funcs = (function() {
         forEachKeyAndVal: forEachKeyAndVal,
         forEachKey: forEachKey,
         forEachVal: forEachVal,
-        forEachWithIndex: forEachWithIndex
+        forEachWithIndex: forEachWithIndex,
+        forEachOrderedTuple: forEachOrderedTuple
     }
 })();
