@@ -158,9 +158,11 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
                 .text(function(d) {
                     return d.rnd;
                 });
+/*
             lines.attr("d", function(d) {
                     return "M" + middleX + "," + middleY + "L" + d.x + "," + d.y;
                 });
+*/
 
             //calculatePoint();
         }
@@ -236,13 +238,14 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
                 return d.clazz;
             })
             .text('')
-            .style("font-size", function(d) { return Math.min(0.2*radius, (0.2*radius - 8) / this.getComputedTextLength() * 38) + "px"; })
+            .style("font-size", function(d) { return Math.min(radius, (radius - 8) / this.getComputedTextLength() * 38) + "px"; })
             .style("fill", "white")
             .attr("dx", "-.9em")
             .attr("dy", ".35em");
 
         bubbles.exit().remove();
 
+/*
         lines = svg.append("g")
             .selectAll(".line")
             .data(bubbleData.nodes);
@@ -251,6 +254,7 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
             .enter()
             .append("path")
             .attr("class", "line");
+*/
 
         force.on("tick", tick);
     });
