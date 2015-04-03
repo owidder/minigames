@@ -31,12 +31,14 @@ com_geekAndPoke_Ngm1.funcs = (function() {
             for(i = 0; i < a.length - 1; i++) {
                 elem1 = a[i];
                 elem2 = a[i+1];
-                fkt(elem1, elem2, i);
+                if(!fkt(elem1, elem2, i)) {
+                    break;
+                }
             }
-            if(withLast) {
-                elem1 = a[a.length - 1];
+            if(withLast && i == a.length-1) {
+                elem1 = a[i];
                 elem2 = a[0];
-                fkt(elem1, elem2, a.length - 1);
+                fkt(elem1, elem2, i);
             }
         }
     }
