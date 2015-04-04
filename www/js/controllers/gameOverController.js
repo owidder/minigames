@@ -38,9 +38,9 @@ com_geekAndPoke_Ngm1.gameOverController = (function() {
                 {name: 'Swypi', group:2, clazz:WITH_HREF_CLASS, href:'#/gAStart', color:'red'},
                 {name: 'Touchi', group:3, clazz:WITH_HREF_CLASS, href:'#/gBStart', color:'orange'},
                 {name: 'Sums', group:5, clazz:WITH_HREF_CLASS, href:'#/gCStart', color:'black'},
-                {name: 'D', group:5, clazz:WITH_HREF_CLASS, href:'#/gD', color:'gray'}
+                {name: 'S2t', group:5, clazz:WITH_HREF_CLASS, href:'#/gD', color:'gray'}
             ],
-            links: util.createLinkArray(5)
+            links: util.createLinkArray(6)
         };
 
         var radius = Math.min(width, height) / 5;

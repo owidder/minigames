@@ -1,4 +1,4 @@
-com_geekAndPoke_Ngm1.gameDController = (function() {
+com_geekAndPoke_Ngm1.gameDController = (function () {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;
     var mathutil = com_geekAndPoke_Ngm1.mathutil;
@@ -6,19 +6,24 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
     var data = com_geekAndPoke_Ngm1.data;
     var fieldComponents = com_geekAndPoke_Ngm1.fieldComponents;
 
-    var gameDController = com_geekAndPoke_Ngm1.rootController.controller('GameDController', function ($scope) {
+    var gameDController = com_geekAndPoke_Ngm1.rootController.controller('GameDController', function ($scope, $location) {
         var bubbles, bubbles_g_enter, bubbles_g_circle_enter, bubbles_g_text_enter;
-        var lines;
         var middleX, middleY;
 
-        var CLASS_GAUGE_TEXT = "gauge-text";
-        var CLASS_ANGLE_TEXT = "angle-text";
-        var CLASS_NO_TEXT = "no-text";
-        var CLASS_SECTOR_TEXT = "sector-text";
-        var CLASS_RANDOM_NUMBER_TEXT = "random-number-text";
-        var CLASS_IS_MOVING_TEXT = "is-moving-text";
+        var CLASS_RANDOM_NUMBER = "random-number-bubble";
+        var CLASS_BUZZER = "buzzer-bubble";
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
+
+        var height = $(window).height();
+        var width = $(window).width();
+        var middleX = width / 2;
+        var middleY = height / 2;
+
+        var radius = Math.min(width, height) / 6;
+        var bubbleData;
+
+        start();
 
         function gameOver() {
             $scope.$root.rootData.points = pointDisplay.getPoints();
@@ -34,49 +39,32 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
             var tanAlpha = diffY / diffX;
             var alpha = Math.atan(tanAlpha);
 
-            if(x < middleX && y < middleY) {
+            if (x < middleX && y < middleY) {
                 alpha += Math.PI;
             }
-            else if(x < middleX && y > middleY) {
+            else if (x < middleX && y > middleY) {
                 alpha = Math.PI - alpha;
             }
-            else if(x > middleX && y < middleY) {
-                alpha = 2*Math.PI - alpha;
+            else if (x > middleX && y < middleY) {
+                alpha = 2 * Math.PI - alpha;
             }
 
             node.angle = Math.round(alpha * 1000) / 1000;
-        }
-
-        function calculatePoint() {
-            if(oldAngle > (Math.PI * 3/2) && angle < (Math.PI * 1/2)) {
-                pointDisplay.increase();
-            }
-        }
-
-        function isNearTo(point1, point2) {
-            var isNearTo = false;
-            var xDiff = Math.round(point1.x) - Math.round(point2.x);
-            var yDiff = Math.round(point1.y) - Math.round(point2.y);
-            if(Math.abs(xDiff) < 3 && Math.abs(yDiff) < 3) {
-                isNearTo = true;
-            }
-
-            return isNearTo;
         }
 
         function checkAscending(nodes) {
             var isInOrder = true;
             var maxRnd = -1;
 
-            funcs.forEachWithIndex(nodes, function(node, index) {
-                if(node.rnd > maxRnd) {
+            funcs.forEachWithIndex(nodes, function (node, index) {
+                if (node.rnd > maxRnd) {
                     maxRnd = node.rnd;
                 }
             });
 
-            funcs.forEachOrderedTuple(nodes, function(node1, node2, index) {
-                if(node2.rnd < node1.rnd) {
-                    if(node1.rnd != maxRnd) {
+            funcs.forEachOrderedTuple(nodes, function (node1, node2, index) {
+                if (node2.rnd < node1.rnd) {
+                    if (node1.rnd != maxRnd) {
                         isInOrder = false;
                     }
                 }
@@ -90,15 +78,15 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
             var isInOrder = true;
             var minRnd = Number.MAX_VALUE;
 
-            funcs.forEachWithIndex(nodes, function(node, index) {
-                if(node.rnd < minRnd) {
+            funcs.forEachWithIndex(nodes, function (node, index) {
+                if (node.rnd < minRnd) {
                     minRnd = node.rnd;
                 }
             });
 
-            funcs.forEachOrderedTuple(nodes, function(node1, node2, index) {
-                if(node2.rnd > node1.rnd) {
-                    if(node1.rnd != minRnd) {
+            funcs.forEachOrderedTuple(nodes, function (node1, node2, index) {
+                if (node2.rnd > node1.rnd) {
+                    if (node1.rnd != minRnd) {
                         isInOrder = false;
                     }
                 }
@@ -109,154 +97,138 @@ com_geekAndPoke_Ngm1.gameDController = (function() {
         }
 
         function checkOrder(nodes) {
-            var isInOrder = checkAscending(nodes);
-            if(!isInOrder) {
-                isInOrder = checkDescending(nodes);
-            }
+            var isInOrder;
 
-            nodes.forEach(function(node) {
+            nodes.forEach(function (node) {
                 fillAngle(node);
             });
-            $scope.bubbles = '';
-            nodes.sort(function(a,b) {
+            nodes.sort(function (a, b) {
                 return a.angle - b.angle;
             });
 
+            isInOrder = checkAscending(nodes);
+            if (!isInOrder) {
+                isInOrder = checkDescending(nodes);
+            }
 
             $scope.isInOrder = (isInOrder ? "yep" : "nope");
             $scope.$apply();
-        }
 
-        function computeMovingCtr(nodes) {
-            var isMovingCtr = 0;
-            nodes.forEach(function(node) {
-                var isMoving;
-                if(!util.isSet(node.oldPoint)) {
-                    node.oldPoint = {
-                        x: node.x,
-                        y: node.y
-                    }
-                }
-                else {
-                    if(!isNearTo(node, node.oldPoint)) {
-                        isMovingCtr++;
-                    }
-                }
-                node.oldPoint.x = node.x;
-                node.oldPoint.y = node.y;
-            });
-            $scope.moveDisplay = isMovingCtr;
-            $scope.$apply();
+            return isInOrder;
         }
 
         function tick() {
-            bubbles.attr("transform", function(d) {
+            bubbles.attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
-            bubbles.selectAll("." + CLASS_RANDOM_NUMBER_TEXT)
-                .transition()
-                .text(function(d) {
-                    return d.rnd;
-                });
-/*
-            lines.attr("d", function(d) {
-                    return "M" + middleX + "," + middleY + "L" + d.x + "," + d.y;
-                });
-*/
-
-            //calculatePoint();
         }
 
         function insertRandomNumbersIntoNodes(nodes) {
-            nodes.forEach(function(node) {
-                node.rnd = util.randomNumberBetweenLowerAndUpper(1, 100);
+            var nodesWithNumberArray = [];
+            nodes.forEach(function (node) {
+                if (node.textclass == CLASS_RANDOM_NUMBER) {
+                    node.rnd = util.randomNumberBetweenLowerAndUpper(1, 100);
+                    nodesWithNumberArray.push(node);
+                }
             });
+
+            return nodesWithNumberArray;
         }
 
-        var height = $(window).height();
-        var width = $(window).width();
-        var middleX = width / 2;
-        var middleY = height / 2;
-
-        var svg = d3.select("#field").append("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-        var points = $scope.$root.rootData.points;
-        var currentGameId = $scope.$root.rootData.currentGameId;
-        if(util.isSet(currentGameId) && currentGameId.length > 0 && util.isSet(points)) {
-            data.setHighScore(currentGameId, points, $scope.$root.rootData);
+        function clickedOnBuzzer() {
+            if (checkOrder(bubbleData.nodes)) {
+                pointDisplay.increase();
+                start();
+            }
+            else {
+                gameOver();
+            }
         }
 
-        if(!util.isDefined(points)) points = '0';
+        function start() {
+            util.clearSvg();
 
-        var bubbleData = {
-            nodes: [
-                {name:'', group:0, color:'blue', clazz: CLASS_RANDOM_NUMBER_TEXT},
-                {name:'', group:4, color:'green', clazz: CLASS_RANDOM_NUMBER_TEXT},
-                {name:'', group:2, color:'red', clazz: CLASS_RANDOM_NUMBER_TEXT},
-                {name:'', group:3, color:'orange', clazz: CLASS_RANDOM_NUMBER_TEXT},
-                {name:'', group:5, color:'black', clazz: CLASS_RANDOM_NUMBER_TEXT}
-            ],
-            links: util.createLinkArray(5)
-        };
-        insertRandomNumbersIntoNodes(bubbleData.nodes);
+            var svg = d3.select("#field").append("svg")
+                .attr("width", width)
+                .attr("height", height);
 
-        setInterval(function() {
-            computeMovingCtr(bubbleData.nodes);
+
+            bubbleData = {
+                nodes: [
+                    {name: '', group: 0, color: 'blue', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 4, color: 'green', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 2, color: 'red', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 3, color: 'orange', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 5, color: 'black', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 6, color: 'gray', circleclass: CLASS_BUZZER}
+                ],
+                links: util.createLinkArray(6)
+            };
+            var nodesWithNumberArray = insertRandomNumbersIntoNodes(bubbleData.nodes);
+
+            var force = d3.layout.force()
+                .charge(-1500)
+                .linkDistance(3 * radius)
+                .size([width, height]);
+
+            force
+                .nodes(bubbleData.nodes)
+                .links(bubbleData.links)
+                .start();
+
+            bubbles = svg.selectAll(".bubble")
+                .data(bubbleData.nodes);
+
+            bubbles_g_enter = bubbles
+                .enter().append("g")
+                .attr("class", "bubble")
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                })
+                .call(force.drag);
+
+            bubbles_g_circle_enter = bubbles_g_enter
+                .append("circle")
+                .attr("r", radius)
+                .attr("class", function (d) {
+                    return d.circleclass;
+                })
+                .attr('fill', function (d) {
+                    return d.color
+                });
+
+            bubbles_g_text_enter = bubbles_g_enter
+                .append("text")
+                .attr("class", function (d) {
+                    return d.textclass;
+                })
+                .text('')
+                .style("font-size", function (d) {
+                    return Math.min(radius, (radius - 8) / this.getComputedTextLength() * 38) + "px";
+                })
+                .style("fill", "white")
+                .attr("dx", "-.9em")
+                .attr("dy", ".35em");
+
+            bubbles.selectAll("." + CLASS_RANDOM_NUMBER)
+                .text(function (d) {
+                    return d.rnd;
+                });
+
+            bubbles.selectAll('.' + CLASS_BUZZER)
+                .on('click', function () {
+                    clickedOnBuzzer();
+                });
+
+            bubbles.exit().remove();
+
+            force.on("tick", tick);
+        }
+
+        setInterval(function () {
             checkOrder(bubbleData.nodes);
-        }, 50);
+        }, 100);
 
-        var radius = Math.min(width, height) / 5;
-
-        var force = d3.layout.force()
-            .charge(-1500)
-            .linkDistance(3*radius)
-            .size([width, height]);
-
-        force
-            .nodes(bubbleData.nodes)
-            .links(bubbleData.links)
-            .start();
-
-        bubbles = svg.selectAll(".bubble")
-            .data(bubbleData.nodes);
-
-        bubbles_g_enter = bubbles
-            .enter().append("g")
-            .attr("class", "bubble")
-            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-            .call(force.drag);
-
-        bubbles_g_circle_enter = bubbles_g_enter
-            .append("circle").attr("r", radius)
-            .attr('fill', function(d) {return d.color});
-
-        bubbles_g_text_enter = bubbles_g_enter
-            .append("text")
-            .attr("class", function(d) {
-                return d.clazz;
-            })
-            .text('')
-            .style("font-size", function(d) { return Math.min(radius, (radius - 8) / this.getComputedTextLength() * 38) + "px"; })
-            .style("fill", "white")
-            .attr("dx", "-.9em")
-            .attr("dy", ".35em");
-
-        bubbles.exit().remove();
-
-/*
-        lines = svg.append("g")
-            .selectAll(".line")
-            .data(bubbleData.nodes);
-
-        lines
-            .enter()
-            .append("path")
-            .attr("class", "line");
-*/
-
-        force.on("tick", tick);
     });
 
     return gameDController;
