@@ -4,7 +4,7 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
 
     var height = $(window).height();
 
-    function HealthCounter(aScope, aRoundEndCallBack) {
+    function HealthCounter(aScope, aRoundEndCallBack, aMaxHealth) {
         var MAX_HEALTH = 3;
         var TIMER_TICK_DURATION = 1000;
 
@@ -14,18 +14,23 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
         var roundEndCallBack = aRoundEndCallBack;
         var timer;
 
+        var maxHealth = aMaxHealth;
+        if(!util.isDefined(maxHealth)) {
+            maxHealth = MAX_HEALTH;
+        }
+
         function count () {
 
             var progress;
 
             healthState++;
-            progress = (100 / MAX_HEALTH) * healthState;
+            progress = (100 / maxHealth) * healthState;
             progressBar.attr('aria-valuenow', progress).style({'width': progress + '%', 'height': height / 20 + 'px'});
 
-            if(healthState < 2) {
+            if(healthState < maxHealth / 2) {
                 scope.progressStyle = 'success';
             }
-            else if (healthState < MAX_HEALTH) {
+            else if (healthState < maxHealth) {
                 scope.progressStyle = 'warning';
             }
             else {
@@ -34,7 +39,7 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
 
             scope.$apply();
 
-            if(healthState > MAX_HEALTH) {
+            if(healthState > maxHealth) {
                 healthState = 0;
                 roundEndCallBack(true);
             }

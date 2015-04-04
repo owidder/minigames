@@ -14,6 +14,7 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
         var CLASS_BUZZER = "buzzer-bubble";
 
         var pointDisplay = new fieldComponents.PointDisplay($scope);
+        var healthCounter = new fieldComponents.HealthCounter($scope, gameOver, 10);
 
         var height = $(window).height();
         var width = $(window).width();
@@ -136,6 +137,7 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
         }
 
         function clickedOnBuzzer() {
+            healthCounter.reset();
             if (checkOrder(bubbleData.nodes)) {
                 pointDisplay.increase();
                 start();
@@ -223,6 +225,8 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
             bubbles.exit().remove();
 
             force.on("tick", tick);
+
+            healthCounter.start();
         }
 
         setInterval(function () {
