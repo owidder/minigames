@@ -37,18 +37,20 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
                 scope.progressStyle = 'danger';
             }
 
-            scope.$apply();
+            // scope.$apply();
 
             if(healthState > maxHealth) {
-                healthState = 0;
+                reset();
                 roundEndCallBack(true);
             }
         }
 
-        this.reset = function () {
+        function reset() {
             clearInterval(timer);
             healthState = 0;
-        };
+        }
+
+        this.reset = reset;
 
         this.start = function() {
             this.reset();
