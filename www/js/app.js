@@ -1,6 +1,7 @@
 com_geekAndPoke_Ngm1.app = (function() {
 
     var app = angular.module('ngm1', [
+        'ngMaterial',
         'ngRoute',
         'controllers'
     ]);

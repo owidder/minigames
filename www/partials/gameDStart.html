@@ -1,15 +1,65 @@
 <section>
-    <div class="jumbotron">
-        <h1>S2t</h1>
-        <p class="lead">
-            Bring the bubbles in order.<br>
-            Ascending, descending, clockwise, counterlockwise? Your choice!
-        </p>
-        <p>
-            <b>High score: {{$root.rootData.highscore_D}}</b>
-        </p>
-        <p>
-            <a class="btn btn-lg btn-success" href="#/gD" role="button">Bye!</a>
-        </p>
+    <style>
+        md-grid-list {
+            margin: 8px;
+        }
+
+        .gray {
+            background: #f5f5f5;
+        }
+
+        .green {
+            background: #b9f6ca;
+        }
+
+        .yellow {
+            background: #ffff8d;
+        }
+
+        .blue {
+            background: #84ffff;
+        }
+
+        .purple {
+            background: #b388ff;
+        }
+
+        .red {
+            background: #ff8a80;
+        }
+
+        md-grid-tile {
+            transition: all 400ms ease-out 50ms;
+        }
+
+    </style>
+    <div>
+        <md-toolbar>
+            <div class="md-toolbar-tools red">
+                <h2 class="md-flex">Toolbar: md-warn</h2>
+            </div>
+        </md-toolbar>
+        <md-content class="md-padding" style="height: 200px;padding: 24px;">
+            Bring the bubbles in order!<br>
+            Ascending, descending, clockwise, counterlockwise? Your choice!<br>
+            Hint: Look for the numberless bubble getting green!
+        </md-content>
+        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
     </div>
+    <!--
+        <div class="jumbotron">
+            <h1>S2t</h1>
+            <p class="lead">
+                Bring the bubbles in order!<br>
+                Ascending, descending, clockwise, counterlockwise? Your choice!<br>
+                Hint: Look for the numberless bubble getting green!
+            </p>
+            <p>
+                <b>High score: {{$root.rootData.highscore_D}}</b>
+            </p>
+            <p>
+                <a class="btn btn-lg btn-success" href="#/gD" role="button">Bye!</a>
+            </p>
+        </div>
+    -->
 </section>
