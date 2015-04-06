@@ -13,20 +13,36 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
         var CLASS_RANDOM_NUMBER = "random-number-bubble";
         var CLASS_BUZZER = "buzzer-bubble";
 
+        var CHECK_ORDER_INTERVAL = 100;
+        var MAX_RANDOM_NUMBER_INCREASE_INTERVAL = 10000;
+        var THIS_IS_THE_HIGHEST_MAX_RANDOM_NUMBER = 1000000000;
+
         var pointDisplay = new fieldComponents.PointDisplay($scope);
-        var healthCounter = new fieldComponents.HealthCounter($scope, gameOver, 10);
+        var healthCounter = new fieldComponents.HealthCounter($scope, roundEnd, 10);
 
         var height = $(window).height();
         var width = $(window).width();
         var middleX = width / 2;
         var middleY = height / 2;
 
-        var radius = Math.min(width, height) / 6;
+        var radius = Math.min(width, height) / 8;
+        var maxRandomNumber = 10;
         var bubbleData;
+        var checkOrderTimer;
+        var maxRandomNumberIncreaseTimer;
+
+        $scope.$root.rootData.currentGameId = constants._GAME_D_ID;
 
         start();
 
+        function increaseMaxRandomNumber() {
+            if(maxRandomNumber < THIS_IS_THE_HIGHEST_MAX_RANDOM_NUMBER) {
+                maxRandomNumber *= 2;
+            }
+        }
+
         function gameOver() {
+            clearInterval(maxRandomNumberIncreaseTimer);
             $scope.$root.rootData.points = pointDisplay.getPoints();
             $location.path('/gameOver');
             $scope.$apply();
@@ -53,19 +69,32 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
             node.angle = Math.round(alpha * 1000) / 1000;
         }
 
-        function checkAscending(nodes) {
-            var isInOrder = true;
+        function findMaxAndMinRnd(nodes) {
             var maxRnd = -1;
+            var minRnd = Number.MAX_VALUE;
 
-            funcs.forEachWithIndex(nodes, function (node, index) {
-                if (node.rnd > maxRnd) {
+            nodes.forEach(function(node) {
+                if(node.rnd < minRnd) {
+                    minRnd = node.rnd;
+                }
+                if(node.rnd > maxRnd) {
                     maxRnd = node.rnd;
                 }
             });
 
+            return {
+                max: maxRnd,
+                min: minRnd
+            }
+        }
+
+        function checkAscending(nodes) {
+            var isInOrder = true;
+            var maxMin = findMaxAndMinRnd(nodes);
+
             funcs.forEachOrderedTuple(nodes, function (node1, node2, index) {
                 if (node2.rnd < node1.rnd) {
-                    if (node1.rnd != maxRnd) {
+                    if (!(node2.rnd == maxMin.min && node1.rnd == maxMin.max)) {
                         isInOrder = false;
                     }
                 }
@@ -77,17 +106,11 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
 
         function checkDescending(nodes) {
             var isInOrder = true;
-            var minRnd = Number.MAX_VALUE;
-
-            funcs.forEachWithIndex(nodes, function (node, index) {
-                if (node.rnd < minRnd) {
-                    minRnd = node.rnd;
-                }
-            });
+            var maxMin = findMaxAndMinRnd(nodes);
 
             funcs.forEachOrderedTuple(nodes, function (node1, node2, index) {
                 if (node2.rnd > node1.rnd) {
-                    if (node1.rnd != minRnd) {
+                    if (!(node2.rnd == maxMin.max && node1.rnd == maxMin.min)) {
                         isInOrder = false;
                     }
                 }
@@ -112,8 +135,12 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
                 isInOrder = checkDescending(nodes);
             }
 
-            $scope.isInOrder = (isInOrder ? "yep" : "nope");
-            $scope.$apply();
+            if(isInOrder) {
+                $('.' + CLASS_BUZZER).attr('class', CLASS_BUZZER + ' in-order');
+            }
+            else {
+                $('.' + CLASS_BUZZER).attr('class', CLASS_BUZZER + ' not-in-order');
+            }
 
             return isInOrder;
         }
@@ -128,12 +155,23 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
             var nodesWithNumberArray = [];
             nodes.forEach(function (node) {
                 if (node.textclass == CLASS_RANDOM_NUMBER) {
-                    node.rnd = util.randomNumberBetweenLowerAndUpper(1, 100);
+                    node.rnd = util.randomNumberBetweenLowerAndUpper(1, maxRandomNumber);
                     nodesWithNumberArray.push(node);
                 }
             });
 
             return nodesWithNumberArray;
+        }
+
+        function roundEnd(isTimeOut) {
+            healthCounter.reset();
+            clearInterval(checkOrderTimer);
+            if(isTimeOut) {
+                gameOver();
+            }
+            else {
+                clickedOnBuzzer();
+            }
         }
 
         function clickedOnBuzzer() {
@@ -158,13 +196,14 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
             bubbleData = {
                 nodes: [
                     {name: '', group: 0, color: 'blue', textclass: CLASS_RANDOM_NUMBER},
-                    {name: '', group: 4, color: 'green', textclass: CLASS_RANDOM_NUMBER},
-                    {name: '', group: 2, color: 'red', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 4, color: 'cyan', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 2, color: 'gray', textclass: CLASS_RANDOM_NUMBER},
                     {name: '', group: 3, color: 'orange', textclass: CLASS_RANDOM_NUMBER},
                     {name: '', group: 5, color: 'black', textclass: CLASS_RANDOM_NUMBER},
-                    {name: '', group: 6, color: 'gray', circleclass: CLASS_BUZZER}
+                    {name: '', group: 1, color: 'magenta', textclass: CLASS_RANDOM_NUMBER},
+                    {name: '', group: 6, color: 'yellow', circleclass: CLASS_BUZZER}
                 ],
-                links: util.createLinkArray(6)
+                links: util.createLinkArray(7)
             };
             var nodesWithNumberArray = insertRandomNumbersIntoNodes(bubbleData.nodes);
 
@@ -206,7 +245,7 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
                 })
                 .text('')
                 .style("font-size", function (d) {
-                    return Math.min(radius, (radius - 8) / this.getComputedTextLength() * 38) + "px";
+                    return Math.min(radius/2, (radius - 8) / this.getComputedTextLength() * 10) + "px";
                 })
                 .style("fill", "white")
                 .attr("dx", "-.9em")
@@ -219,7 +258,7 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
 
             bubbles.selectAll('.' + CLASS_BUZZER)
                 .on('click', function () {
-                    clickedOnBuzzer();
+                    roundEnd(false);
                 });
 
             bubbles.exit().remove();
@@ -227,11 +266,21 @@ com_geekAndPoke_Ngm1.gameDController = (function () {
             force.on("tick", tick);
 
             healthCounter.start();
+
+            setTimeout(function() {
+                bubbles
+                    .selectAll('.' + CLASS_RANDOM_NUMBER)
+                    .style("font-size", function (d) {
+                        return Math.min(radius, (radius - 8) / this.getComputedTextLength() * 38) + "px";
+                    })
+            }, 100);
+
+            checkOrderTimer = setInterval(function () {
+                checkOrder(nodesWithNumberArray);
+            }, CHECK_ORDER_INTERVAL);
         }
 
-        setInterval(function () {
-            checkOrder(bubbleData.nodes);
-        }, 100);
+        maxRandomNumberIncreaseTimer = setInterval(increaseMaxRandomNumber, MAX_RANDOM_NUMBER_INCREASE_INTERVAL);
 
     });
 
