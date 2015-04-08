@@ -1,5 +1,11 @@
 <section>
     <style>
+
+        .svg-icon {
+            fill: black;
+            stroke-width: 5;
+        }
+
         md-grid-list {
             margin: 8px;
         }
@@ -17,15 +23,15 @@
         }
 
         .blue {
-            background: #84ffff;
+            background: mediumblue;
         }
 
         .purple {
-            background: #b388ff;
+            background: purple;
         }
 
         .red {
-            background: #ff8a80;
+            background: red;
         }
 
         md-grid-tile {
@@ -35,7 +41,7 @@
     </style>
     <div>
         <md-toolbar>
-            <div class="md-toolbar-tools red">
+            <div class="md-toolbar-tools blue">
                 <h2 class="md-flex">Toolbar: md-warn</h2>
             </div>
         </md-toolbar>
@@ -44,6 +50,12 @@
             Ascending, descending, clockwise, counterlockwise? Your choice!<br>
             Hint: Look for the numberless bubble getting green!
         </md-content>
+        <a href="#/gD">
+<!--
+            <ng-md-icon icon="p1" ng-attr-style="fill: black;" size="480"></ng-md-icon>
+-->
+            <ng-md-icon icon="{{icon}}" ng-attr-style="fill: {{fill}}" size="480" options='{"rotation": "none"}'></ng-md-icon>
+        </a>
         <md-progress-linear md-mode="indeterminate"></md-progress-linear>
     </div>
     <!--
@@ -58,7 +70,6 @@
                 <b>High score: {{$root.rootData.highscore_D}}</b>
             </p>
             <p>
-                <a class="btn btn-lg btn-success" href="#/gD" role="button">Bye!</a>
             </p>
         </div>
     -->
