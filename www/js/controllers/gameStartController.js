@@ -3,7 +3,7 @@ com_geekAndPoke_Ngm1.menuController = (function() {
     var util = com_geekAndPoke_Ngm1.util;
 
     var gameStartController = com_geekAndPoke_Ngm1.controllers.controller('GameStartController', function ($scope) {
-        var icons = ['accessibility', 'p1'];
+        var icons = ['pic1', 'p1'];
         var colors = ['lightgreen', 'pink', 'wheat', '#cc99ff', '#abcdef'];
         $scope.cnt = Math.floor(Math.random() * icons.length);
         $scope.icon = icons[$scope.cnt];
