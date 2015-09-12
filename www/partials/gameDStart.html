@@ -1,76 +1,51 @@
 <section>
     <style>
-
-        .svg-icon {
-            fill: black;
-            stroke-width: 5;
+        #start-screen-top-bar {
+            background-color: #E57373;
+            color: white;
+            font-style: normal;
+            font-weight: 200;
+            font-size: 3em;
         }
 
-        md-grid-list {
-            margin: 8px;
+        #start-screen-content {
+            height: 500px;
+            font-style: normal;
+            font-weight: 100;
+            font-size: 2em;
         }
-
-        .gray {
-            background: #f5f5f5;
-        }
-
-        .green {
-            background: #b9f6ca;
-        }
-
-        .yellow {
-            background: #ffff8d;
-        }
-
-        .blue {
-            background: mediumblue;
-        }
-
-        .purple {
-            background: purple;
-        }
-
-        .red {
-            background: red;
-        }
-
-        md-grid-tile {
-            transition: all 400ms ease-out 50ms;
-        }
-
     </style>
-    <div>
-        <md-toolbar>
-            <div class="md-toolbar-tools blue">
-                <h2 class="md-flex">Toolbar: md-warn</h2>
+
+    <div class="browser-window">
+        <div class="top-bar">
+            <div class="circles">
+                <div id="close-circle" class="circle"></div>
+                <div id="minimize-circle" class="circle"></div>
+                <div id="maximize-circle" class="circle"></div>
             </div>
-        </md-toolbar>
-        <md-content class="md-padding" style="height: 200px;padding: 24px;">
-            Bring the bubbles in order!<br>
-            Ascending, descending, clockwise, counterlockwise? Your choice!<br>
-            Hint: Look for the numberless bubble getting green!
-        </md-content>
-        <a href="#/gD">
-<!--
-            <ng-md-icon icon="p1" ng-attr-style="fill: black;" size="480"></ng-md-icon>
--->
-            <ng-md-icon icon="{{icon}}" ng-attr-style="fill: {{fill}}" size="480" options='{"rotation": "none"}'></ng-md-icon>
-        </a>
-        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
-    </div>
-    <!--
-        <div class="jumbotron">
-            <h1>S2t</h1>
-            <p class="lead">
-                Bring the bubbles in order!<br>
-                Ascending, descending, clockwise, counterlockwise? Your choice!<br>
-                Hint: Look for the numberless bubble getting green!
-            </p>
-            <p>
-                <b>High score: {{$root.rootData.highscore_D}}</b>
-            </p>
-            <p>
-            </p>
         </div>
-    -->
+        <div class="content">
+            <div class="row">
+
+                <div id="start-screen-top-bar" class="col s12">
+                    Sort
+                </div>
+                <div id="start-screen-content" class="col s12">
+                    <div class="container">
+                        <div class="section">
+                            Bring the bubbles in order!<br>
+                            Ascending, descending, clockwise, counterlockwise? Your choice!<br>
+                            Hint: Look for the numberless bubble getting green!
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="section">
+                            <a class="waves-effect waves-light btn" href="#/gD" role="button">Shut up and get me in!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
