@@ -1,3 +1,4 @@
+
 com_geekAndPoke_Ngm1.gameAController = (function() {
     var constants = com_geekAndPoke_Ngm1.const;
     var util = com_geekAndPoke_Ngm1.util;

@@ -32,8 +32,8 @@ com_geekAndPoke_Ngm1.app = (function() {
                 controller: 'GameOverController'
             })
             .when('/gAStart', {
-                templateUrl: 'partials/gameAStart.html',
-                controller: 'GameStartController'
+                templateUrl: 'partials/gameStart.html',
+                controller: 'GameAStartController'
             })
             .when('/gBStart', {
                 templateUrl: 'partials/gameBStart.html',
@@ -44,8 +44,8 @@ com_geekAndPoke_Ngm1.app = (function() {
                 controller: 'GameStartController'
             })
             .when('/gDStart', {
-                templateUrl: 'partials/gameDStart.html',
-                controller: 'GameStartController'
+                templateUrl: 'partials/gameStart.html',
+                controller: 'GameDStartController'
             })
             .otherwise({
                 redirectTo: '/gameOver'

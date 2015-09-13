@@ -40,11 +40,13 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         newBubblesWarningDisplay.displayFadeInTime = TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES;
 
         function gameOver() {
-            clearTimeout(createNewBubblesTimer);
-            clearTimeout(warnAboutNewBubblesTimer);
-            $scope.$root.rootData.points = pointDisplay.getPoints();
-            $location.path('/gameOver');
-            $scope.$apply();
+            clearInterval(createNewBubblesTimer);
+            clearInterval(warnAboutNewBubblesTimer);
+            if(util.isSet($scope.$root)) {
+                $scope.$root.rootData.points = pointDisplay.getPoints();
+                $location.path('/gameOver');
+                $scope.$apply();
+            }
         }
 
         function cx(x) {
