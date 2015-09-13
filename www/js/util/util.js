@@ -1,5 +1,6 @@
-com_geekAndPoke_Ngm1.util = (function () {
+'use strict';
 
+angular.module(__global.appName).factory("util", function() {
     function isDefined(o) {
         return typeof(o) !== 'undefined';
     }
@@ -70,4 +71,4 @@ com_geekAndPoke_Ngm1.util = (function () {
         pushAll: pushAll,
         createLinkArray: createLinkArray
     };
-})();
+});

@@ -1,7 +1,6 @@
-com_geekAndPoke_Ngm1.data = function() {
-    var constants = com_geekAndPoke_Ngm1.const;
-    var util = com_geekAndPoke_Ngm1.util;
+'use strict';
 
+angular.module(__global.appName).factory("data", function(constants, util) {
     var ScopeRootData = function() {
         var HIGHSCORE_PREFIX = "highscore_";
 
@@ -49,4 +48,4 @@ com_geekAndPoke_Ngm1.data = function() {
         setHighScore: setHighScore,
         getHighScore: getHighScore
     };
-}();
+});

@@ -1,7 +1,6 @@
-com_geekAndPoke_Ngm1.fieldComponents = (function () {
-    var constants = com_geekAndPoke_Ngm1.const;
-    var util = com_geekAndPoke_Ngm1.util;
+'use strict';
 
+angular.module(__global.appName).factory("fieldComponents", function(util) {
     var height = $(window).height();
 
     function HealthCounter(aScope, aRoundEndCallBack, aMaxHealth) {
@@ -119,5 +118,4 @@ com_geekAndPoke_Ngm1.fieldComponents = (function () {
         PointDisplay: PointDisplay,
         GeneralDisplay: GeneralDisplay
     }
-
-})();
+});

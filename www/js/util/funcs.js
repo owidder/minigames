@@ -1,6 +1,6 @@
 'use strict';
 
-com_geekAndPoke_Ngm1.funcs = (function() {
+angular.module(__global.appName).factory("funcs", function() {
     function _if(boolean, trueBody) {
         if(boolean) {
             trueBody();
@@ -81,4 +81,4 @@ com_geekAndPoke_Ngm1.funcs = (function() {
         forEachWithIndex: forEachWithIndex,
         forEachOrderedTuple: forEachOrderedTuple
     }
-})();
+});
