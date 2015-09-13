@@ -36,8 +36,8 @@ com_geekAndPoke_Ngm1.app = (function() {
                 controller: 'GameAStartController'
             })
             .when('/gBStart', {
-                templateUrl: 'partials/gameBStart.html',
-                controller: 'GameStartController'
+                templateUrl: 'partials/gameStart.html',
+                controller: 'GameBStartController'
             })
             .when('/gCStart', {
                 templateUrl: 'partials/gameCStart.html',

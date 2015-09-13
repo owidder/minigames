@@ -39,13 +39,18 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         var newBubblesWarningDisplay = new fieldComponents.GeneralDisplay($scope, ".new-bubbles-warning");
         newBubblesWarningDisplay.displayFadeInTime = TIME_BETWEEN_WARN_AND_CREATE_NEW_BUBBLES;
 
+        var isGameOver = false;
+
         function gameOver() {
-            clearInterval(createNewBubblesTimer);
-            clearInterval(warnAboutNewBubblesTimer);
-            if(util.isSet($scope.$root)) {
-                $scope.$root.rootData.points = pointDisplay.getPoints();
-                $location.path('/gameOver');
-                $scope.$apply();
+            if(!isGameOver) {
+                isGameOver = true;
+                clearInterval(createNewBubblesTimer);
+                clearInterval(warnAboutNewBubblesTimer);
+                if(util.isSet($scope.$root)) {
+                    $scope.$root.rootData.points = pointDisplay.getPoints();
+                    $location.path('/gameOver');
+                    $scope.$apply();
+                }
             }
         }
 
@@ -188,6 +193,10 @@ com_geekAndPoke_Ngm1.gameAController = (function() {
         }
 
         function createNewBubbles() {
+            if(isGameOver) {
+                return;
+            }
+
             var nodes = [], i;
             var numberOfExtraBubbles = 0;
 

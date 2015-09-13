@@ -6,7 +6,7 @@ com_geekAndPoke_Ngm1.menuController = (function() {
 
         $scope.highscore = $scope.$root.rootData.highscore_D;
         $scope.bgClass = "bg_gray";
-        $scope.section1 = "Bring the bubbles in order!\n" +
+        $scope.section1 = "Bring the bubbles in order! " +
             "Ascending, descending, clockwise, counterlockwise? Your choice!";
         $scope.section2 = "Hint: Look for the numberless bubble getting green and touch it!";
     });
