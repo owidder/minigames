@@ -1,8 +1,4 @@
-angular.module(__global.appName, [
-    'ngMaterial',
-    'ngMdIcons',
-    'ngRoute'
-]).config(function ($routeProvider, $locationProvider) {
+angular.module(__global.appName, ['ngRoute']).config(function ($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(false);
 
     $routeProvider.
