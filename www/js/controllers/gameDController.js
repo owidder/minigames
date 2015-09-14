@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module(__global.appName).controller("GameDController", function ($scope, $location, constants, util, funcs, fieldComponents) {
+angular.module(__global.appName).controller("GameDController", function ($scope, $location, $timeout, $interval, constants, util, funcs, fieldComponents) {
     var bubbles, bubbles_g_enter, bubbles_g_circle_enter, bubbles_g_text_enter;
     var middleX, middleY;
 
@@ -36,10 +36,11 @@ angular.module(__global.appName).controller("GameDController", function ($scope,
     }
 
     function gameOver() {
-        clearInterval(maxRandomNumberIncreaseTimer);
-        $scope.$root.rootData.points = pointDisplay.getPoints();
-        $location.path('/gameOver');
-        $scope.$apply();
+        $timeout(function() {
+            $interval.cancel(maxRandomNumberIncreaseTimer);
+            $scope.$root.rootData.points = pointDisplay.getPoints();
+            $location.path('/gameOver');
+        });
     }
 
     function fillAngle(node) {
@@ -159,7 +160,7 @@ angular.module(__global.appName).controller("GameDController", function ($scope,
 
     function roundEnd(isTimeOut) {
         healthCounter.reset();
-        clearInterval(checkOrderTimer);
+        $interval.cancel(checkOrderTimer);
         if(isTimeOut) {
             gameOver();
         }
@@ -269,11 +270,11 @@ angular.module(__global.appName).controller("GameDController", function ($scope,
                 })
         }, 100);
 
-        checkOrderTimer = setInterval(function () {
+        checkOrderTimer = $interval(function () {
             checkOrder(nodesWithNumberArray);
         }, CHECK_ORDER_INTERVAL);
     }
 
-    maxRandomNumberIncreaseTimer = setInterval(increaseMaxRandomNumber, MAX_RANDOM_NUMBER_INCREASE_INTERVAL);
+    maxRandomNumberIncreaseTimer = $interval(increaseMaxRandomNumber, MAX_RANDOM_NUMBER_INCREASE_INTERVAL);
 
 });
