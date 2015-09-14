@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module(__global.appName).factory("fieldComponents", function(util) {
+angular.module(__global.appName).factory("fieldComponents", function(util, $interval) {
     var height = $(window).height();
 
     function HealthCounter(aScope, aRoundEndCallBack, aMaxHealth) {
@@ -45,7 +45,7 @@ angular.module(__global.appName).factory("fieldComponents", function(util) {
         }
 
         function reset() {
-            clearInterval(timer);
+            $interval.cancel(timer);
             healthState = 0;
         }
 
@@ -54,8 +54,8 @@ angular.module(__global.appName).factory("fieldComponents", function(util) {
         this.start = function() {
             this.reset();
             count();
-            timer = setInterval(count, TIMER_TICK_DURATION);
-        }
+            timer = $interval(count, TIMER_TICK_DURATION);
+        };
 
         d3.select('#countdown').style({'font-size': height/10 + 'px'});
         this.reset();
