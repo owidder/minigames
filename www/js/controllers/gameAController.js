@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module(__global.appName).controller("GameAController", function ($scope, $route, $location, constants, util, fieldComponents) {
+angular.module(__global.appName).controller("GameAController", function ($scope, $route, $location, constants, util, SimpleEvent, fieldComponents) {
     var GROUP_INCREASE_INTERVAL = 10000;
     var MAX_NUMBER = 100;
     var NUMBER_OF_LIFES = 1;
@@ -16,6 +16,11 @@ angular.module(__global.appName).controller("GameAController", function ($scope,
     var currentNumberOfGroups = 1;
 
     var lastNumbers = {};
+
+    var roundEndEventIn = new SimpleEvent();
+    var resetEventOut = new SimpleEvent();
+    var startEventOut = new SimpleEvent();
+    roundEndEventIn.on(roundEnd);
 
     var pointDisplay = new fieldComponents.PointDisplay($scope);
     var healthCounter = new fieldComponents.HealthCounter($scope, roundEnd);
@@ -164,6 +169,7 @@ angular.module(__global.appName).controller("GameAController", function ($scope,
     }
 
     $scope.$root.rootData.currentGameId = constants._GAME_A_ID;
+
 
     height = $(window).height();
     width = $(window).width();
